@@ -8,28 +8,126 @@
 <body>
 
 <div metal:fill-slot="main">
+  <form id="form" class="" method="post"
+        action="merge-contacts-apply"
+      tal:define="update view/update;
+                  colnum python:len(view.contents)">
 
-  <div id="viewlet-above-content-title" tal:content="structure provider:plone.abovecontenttitle" tal:condition="not:ajax_load" />
-  <div tal:replace="structure context/@@basefields" />
+    <table class="listing nosort">
+     <thead>
+      <tr>
+       <th></th>
+       <th tal:repeat="content view/contents">
+		<a tal:attributes="href content/obj/absolute_url"
+		   tal:content="content/obj/get_full_title" target="_new"></a>
+		<input type="hidden" name="uids:list"
+		       tal:attributes="value content/uid" />
+       </th>
+       <th></th>
+      </tr>
+      <tr>
+        <td i18n:translate="">Location</td>
+        <td tal:repeat="item view/contents">
+          <input type="radio"
+                 name="path"
+                 tal:define="index repeat/item/index"
+                 tal:attributes="checked python:index == 0 and '1' or None;
+                                 id string:path-${item/uid};
+                                 value item/uid;
+                                 class index" />
+			<label tal:attributes="for string:path-${item/uid}"
+				   tal:content="item/path"></label>
+        </td>
+        <td></td>
+      </tr>
+     </thead>
 
-  <div id="organizations" class="field" tal:condition="view/organizations">
-      <label><tal:block i18n:translate="">Organizations</tal:block>:</label>
+	<tal:fieldsets tal:repeat="fieldset view/fieldsets">
+	    <tr>
+		  <th i18n:translate="" tal:content="fieldset/title"
+		      tal:attributes="colspan python:colnum + 1"></th>
+		  <th></th>
+	    </tr>
+	   <tal:fields repeat="field fieldset/fields">
+	    <tr tal:define="diff python:view.diff(field)"
+	        tal:condition="diff">
+	      <td tal:content="python:field.title">
+	      </td>
+	      <td tal:condition="diff"
+	          tal:repeat="item diff">
+			<input type="radio"
+			       tal:condition="item/selectable"
+			       tal:attributes="name field/__name__;
+			                       value item/uid;
+			                       id string:${field/__name__}-${item/uid};
+			                       checked item/selected" />
+			<label tal:attributes="for string:${field/__name__}-${item/uid};
+			       				   class python: (item['differing']) and 'differing' or 'similar'"
+				   tal:content="structure item/render"></label>
+	      </td>
+	      <td class="cell-delete">
+			<label tal:attributes="name field/__name__;
+			                       for string:${field/__name__}-empty;">
+			    <img src="delete_icon.png" title="Set empty"
+			         i18n:attributes="title" />
+			</label>
+	        <input tal:attributes="type python:len([i for i in diff if i['selectable']]) == 0 and 'checkbox' or 'radio';
+			                       name field/__name__;
+			                       id string:${field/__name__}-empty;"
+			        value="empty" />
+		  </td>
+	    </tr>
+	   </tal:fields>
+	  </tal:fieldsets>
+   </table>
+
+   <div tal:condition="view/merge_hp_persons">
+    <h3>Merge persons</h3>
+    <input type="checkbox" checked="1" name="merge-hp-persons" value="1" />
+    <label i18n:translate="help_merge_hp_persons">
+    	Those held positions are stored into different person contents.
+    	Also merge persons.</label>
+   </div>
+
+   <div tal:condition="python: max([len(c['back_references']) for c in view.contents]) > 0">
+   <h3 i18n:translate="">Back references</h3>
+   <p class="discreet" i18n:translate="help_back_references">
+   For your information : all contents that refer to merged elements will be updated
+   with the one which has been selected as 'location'.
+   </p>
+    <div tal:repeat="content view/contents">
+      <label tal:content="content/obj/Title"></label>
       <ul>
-      <tal:block tal:repeat="organization view/organizations">
-          <li><a class="link-tooltip" tal:attributes="href organization/absolute_url">
-              <span tal:replace="organization/Title"
-                    i18n:translate="" />
-          </a></li>
-      </tal:block>
+        <li tal:repeat="backref content/back_references">
+          <a target="new" tal:attributes="href backref/obj/absolute_url"
+             tal:content="backref/obj/Title"></a>
+          (<span tal:content="string: ${backref/obj/portal_type} - ${backref/attribute}"></span>)
+        </li>
       </ul>
   </div>
+  </div>
 
-  <div tal:replace="structure context/@@contactdetails" />
+   <div tal:condition="python: max([len(c['subcontents']) for c in view.contents]) > 0">
+   <h3 i18n:translate="">Contents</h3>
+   <p class="discreet" i18n:translate="help_subcontents">
+   All contents of the merged elements will be moved into the element selected as 'location'.
+   If some of those contents have to be merged, check them and you will be redirected to a merge screen.
+   </p>
+    <div tal:repeat="content view/contents">
+      <label tal:content="content/obj/Title"></label>
+      <ul>
+        <li tal:repeat="subcontent content/subcontents">
+          <input type="checkbox" name="subcontent_uids:list"
+                 tal:attributes="value subcontent/UID" />
+          <a target="new" tal:attributes="href subcontent/absolute_url"
+             tal:content="subcontent/Title"></a>
+        </li>
+      </ul>
+  </div>
+   </div>
 
-  <div tal:replace="structure context/@@ttwfields" />
-
-  <metal:additional-fields use-macro="context/contact_core_macros/macros/additional-fields" />
-
+   <input type="submit" value="Merge contents" i18n:attributes="value" />
+  </form>
 </div>
 
 </body>

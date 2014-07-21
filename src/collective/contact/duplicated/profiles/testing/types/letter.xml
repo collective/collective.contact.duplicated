@@ -21,9 +21,7 @@
  <property name="klass">plone.dexterity.content.Container</property>
  <property name="behaviors">
   <element value="plone.app.content.interfaces.INameFromTitle"/>
-  <element value="collective.documentfusion.interfaces.IDocumentFusion"/>
-  <element value="collective.documentfusion.interfaces.IPDFGeneration"/>
-  <element value="plone.app.dexterity.behaviors.metadata.ICategorization"/>
+  <element value="plone.app.relationfield.behavior.IRelatedItems"/>
  </property>
  <property name="schema"></property>
  <property

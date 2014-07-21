@@ -1,0 +1,7 @@
+.template-merge-contacts table td.cell-delete {
+	white-space: nowrap;
+}
+
+.template-merge-contacts table .similar {
+	font-style: italic;
+}

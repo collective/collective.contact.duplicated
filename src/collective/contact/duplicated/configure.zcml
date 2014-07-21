@@ -9,12 +9,13 @@
     <i18n:registerTranslations directory="locales" />
 
     <five:registerPackage package="." initialize=".initialize" />
-    
+
+	<include package="collective.contact.core" />
     <include package="five.grok" />
     <include package="plone.api" />
 
     <include package=".browser" />
-    <include package=".content" />
+    <include file="fields.zcml" />
 
     <grok:grok package="." />
 

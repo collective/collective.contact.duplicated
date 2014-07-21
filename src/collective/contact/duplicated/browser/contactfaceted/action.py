@@ -2,13 +2,14 @@ from collective.contact.facetednav.browser.actions.base import BatchActionBase
 from collective.contact.facetednav import _
 
 
-class DiffAction(BatchActionBase):
+class MergeAction(BatchActionBase):
 
     label = _("Merge duplicated")
-    name = 'excelexport'
+    name = 'merge'
     klass = 'context'
     weight = 800
+    multiple_selection = True
 
     @property
     def onclick(self):
-        return 'contactfacetednav.excel_export()'
+        return 'contactduplicated.merge_contacts()'

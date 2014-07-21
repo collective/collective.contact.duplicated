@@ -15,6 +15,7 @@ from plone.testing import z2
 
 import unittest2 as unittest
 
+import collective.contact.core
 import collective.contact.duplicated
 
 
@@ -31,10 +32,15 @@ class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
                       name='testing.zcml')
         for p in self.products:
             z2.installProduct(app, p)
+        self.loadZCML(package=collective.contact.core,
+                      name='testing.zcml')
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
         # Install into Plone site using portal_setup
+        applyProfile(portal, 'collective.contact.core:testing')
+        # insert some test data
+        applyProfile(portal, 'collective.contact.core:test_data')
         applyProfile(portal, 'collective.contact.duplicated:testing')
 
         # Login and create some test content

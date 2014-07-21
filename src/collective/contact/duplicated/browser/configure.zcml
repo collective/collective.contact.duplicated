@@ -1,13 +1,33 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.plone.org/zcml"
     i18n_domain="collective.contact.duplicated">
 
-    <!-- Publish static files -->
-    <browser:resourceDirectory
-      name="collective.contact.duplicated"
-      directory="static"
+  <browser:resourceDirectory
+    name="collective.contact.duplicated"
+    directory="static"
+    />
+
+  <browser:page
+      name="merge-contacts"
+      for="collective.contact.core.content.directory.IDirectory"
+      class=".view.Compare"
+      template="templates/compare.pt"
+      permission="zope2.DeleteObjects"
+      layer="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
       />
+
+  <browser:page
+      name="merge-contacts-apply"
+      for="collective.contact.core.content.directory.IDirectory"
+      class=".view.Merge"
+      permission="zope2.DeleteObjects"
+      layer="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
+      />
+
+
+   <include zcml:condition="installed collective.contact.facetednav"
+            package=".contactfaceted" />
 
 </configure>

@@ -1,16 +1,21 @@
-from collections import OrderedDict, Counter
+from copy import copy
 
+from zope.intid.interfaces import IIntIds
 from zExceptions import NotFound
 from zope.component import getUtility
-from Products.Five.browser import BrowserView
-from plone.schemaeditor.utils import non_fieldset_fields
-from plone.dexterity.interfaces import IDexterityFTI
+from zope.lifecycleevent import modified
+from z3c.relationfield.relation import RelationValue
 
+from Products.Five.browser import BrowserView
 from plone import api
-from plone.behavior.interfaces import IBehavior
-from plone.autoform.interfaces import IFormFieldProvider
-from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.uuid.interfaces import IUUID
+
+from collective.contact.core.content.held_position import IHeldPosition
+from collective.contact.duplicated.interfaces import IFieldRenderer
+from collective.contact.duplicated.interfaces import IFieldValueCopy
+from collective.contact.duplicated.api import get_back_references,\
+    get_fieldsets, get_fields
+from Products.statusmessages.interfaces import IStatusMessage
 
 
 class Compare(BrowserView):
@@ -22,49 +27,144 @@ class Compare(BrowserView):
             raise NotFound
 
         # one content type
-        assert len([b.portal_type for b in b in contents]) == 1
-        return [{'obj': c.getObject(),
-                 'uid': c.UID,
-                 'path': c.getPath()} for c in contents]
-
-    def get_fieldsets(self, portal_type):
-        fti = getUtility(IDexterityFTI, name=portal_type)
-        schema = fti.lookupSchema()
-        fieldsets = []
-        fieldsets_dict = OrderedDict({'default':
-                                      {'title': '',
-                                       'fields': non_fieldset_fields(schema)}})
-        for fieldset in schema.queryTaggedValue(FIELDSETS_KEY, []):
-            fieldsets_dict[fieldset.name] = {'title': fieldset.name,
-                                             'fields': [schema.getField(f)
-                                                        for f in fieldset.fields]}
-        self.fieldsets = fieldsets
-
-        for behavior_id in fti.behaviors:
-            schema = getUtility(IBehavior, behavior_id).interface
-            if not IFormFieldProvider.providedBy(schema):
-                continue
-
-            for fieldset in schema.queryTaggedValue(FIELDSETS_KEY, []):
-                fieldsets.setdefault(fieldset.__name__, []).extend(fieldset.fields)
-
-            fieldsets['default'].extend(non_fieldset_fields(schema))
-
+        assert len(set([b.portal_type for b in contents])) == 1
+        content_objs = [c.getObject() for c in contents]
+        return [{'obj': obj,
+                 'uid': IUUID(obj),
+                 'path': '/'.join(obj.getPhysicalPath()),
+                 'back_references': get_back_references(obj),
+                 'subcontents': obj.values()} for obj in content_objs]
 
     def update(self):
         self.contents = self.get_contents()
-        self.fieldsets = self.get_fieldsets(self.contents[0].portal_type)
+        first = self.contents[0]['obj']
+        self.portal_type = first.portal_type
+        self.fieldsets = get_fieldsets(self.portal_type)
+
+        # check if this is contacts from different persons,
+        # then we can also merge the persons
+        self.merge_hp_persons = False
+        if IHeldPosition.providedBy(first):
+            person_uids = [IUUID(hp['obj'].get_person()) for hp in self.contents]
+            if len(set(person_uids)) > 1:
+                self.merge_hp_persons = True
 
     def diff(self, field):
-        for content in self.contents:
-            diff = [{'uid': content['uid'],
-                     'value': getattr(content, field.__name__)}
-                    for content in self.contents]
+        values = [getattr(c['obj'], field.__name__) for c in self.contents]
 
-        if Counter([v['value'] for v in diff]) == 1:
-            return None
+        #  check if at least two values differ
+        for index, value in enumerate(values[:-1]):
+            if value != values[index + 1]:
+                differing = True
+                break
+        else:
+            if value:  # set and all the same
+                differing = False
+            else:  # not set
+                return None
 
+        diff = []
+        one_selected = False  # we select by default the first value that is set
+        for index, content in enumerate(self.contents):
+            value = values[index]
+            render = IFieldRenderer(field).render(content['obj'])
+            if render == None:
+                selectable = False
+                selected = False
+            elif not differing:
+                selectable = False
+                selected = False
+            elif not one_selected:
+                selected = True
+                selectable = True
+                one_selected = True
+            else:
+                selectable = True
+                selected = False
+
+            info = {'uid': content['uid'],
+                    'value': value,
+                    'selected': selected,
+                    'differing': differing,
+                    'selectable': selectable,
+                    'render': render}
+            diff.append(info)
+
+        return diff
+
+
+class Merge(BrowserView):
 
     def __call__(self):
-        self.update()
-        super(Compare, self).__call__()
+        request = self.request
+        values = copy(request.form)
+        merge_hp_persons = values.pop('merge-hp-persons', False)
+        subcontent_uids = values.pop('subcontent_uids', False)
+        contents = dict([(uid, api.content.get(UID=uid))
+                         for uid in values.pop('uids')])
+
+        #  get canonical content
+        canonical_uid = values.pop('path')
+        canonical = api.content.get(UID=canonical_uid)
+        fields = dict([(field.__name__, field)
+                       for field in get_fields(canonical.portal_type)])
+
+        # update fields
+        for field_name, uid in values.items():
+            if uid == canonical_uid:
+                continue
+            elif uid == 'empty':
+                delattr(canonical, field_name)
+            else:
+                origin = contents.get(uid)
+                field = fields[field_name]
+                IFieldValueCopy(field).transfer(origin, canonical)
+
+        # update back references of removed objects
+        intids = getUtility(IIntIds)
+        canonical_intid= intids.getId(canonical)
+        for content in contents.values():
+            if content == canonical:
+                continue
+
+            back_references = get_back_references(content)
+            for back_reference in back_references:
+                from_obj = back_reference['obj']
+                attribute = back_reference['attribute']
+                value = getattr(from_obj, attribute)
+                if isinstance(value, (tuple, list)):
+                    for index, v in enumerate(copy(value)):
+                        if v.to_object == content:
+                            value.remove(v)
+                            value.insert(index, RelationValue(canonical_intid))
+
+                        setattr(from_obj, attribute, value)
+                else:
+                    setattr(from_obj, attribute, RelationValue(canonical_intid))
+
+                modified(from_obj)
+
+        for content in contents.values():
+            if content != canonical:
+                cb = content.manage_cutObjects(content.keys())
+                canonical.manage_pasteObjects(cb)
+                IStatusMessage(request).add("%s has been removed" %
+                                            "/".join(content.getPhysicalPath()))
+                api.content.delete(content)
+
+        # if we merge contacts, merge persons
+        next_uids = ''
+        if merge_hp_persons:
+            next_uids = '&'.join([IUUID(content.get_person())
+                                   for content in contents.values()])
+
+        elif subcontent_uids:
+            next_uids = subcontent_uids
+
+        if next_uids:
+            request.response.redirect("%s/merge-contacts?%s" % (
+                    self.context.absolute_url(),
+                    '&'.join(['uids:list=%s' % next_uid
+                              for next_uid in next_uids])))
+        else:
+            request.response.redirect(canonical.absolute_url())
