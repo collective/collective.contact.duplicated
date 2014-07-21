@@ -41,14 +41,15 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
+        'collective.contact.core',
         'plone.api',
         'setuptools',
     ],
     extras_require={
         'test': [
             'ecreall.helpers.testing',
+            'collective.contact.facetednav',
             'plone.app.testing',
-            'plone.app.robotframework',
         ],
     },
     entry_points="""

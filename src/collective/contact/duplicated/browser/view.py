@@ -68,7 +68,7 @@ class Compare(BrowserView):
         for index, content in enumerate(self.contents):
             value = values[index]
             render = IFieldRenderer(field).render(content['obj'])
-            if render == None:
+            if render is None:
                 selectable = False
                 selected = False
             elif not differing:
@@ -95,6 +95,52 @@ class Compare(BrowserView):
 
 class Merge(BrowserView):
 
+    def _transfer_field_values(self, values, contents, canonical):
+        fields = dict([(field.__name__, field)
+                       for field in get_fields(canonical.portal_type)])
+        canonical_uid = IUUID(canonical)
+        for field_name, uid in values.items():
+            if uid == canonical_uid:
+                continue
+            elif uid == 'empty':
+                delattr(canonical, field_name)
+            else:
+                origin = contents.get(uid)
+                field = fields[field_name]
+                IFieldValueCopy(field).transfer(origin, canonical)
+
+    def _transfer_back_references(self, content, canonical):
+        """Update back references of removed objects
+        """
+        intids = getUtility(IIntIds)
+        canonical_intid = intids.getId(canonical)
+        back_references = get_back_references(content)
+        for back_reference in back_references:
+            from_obj = back_reference['obj']
+            attribute = back_reference['attribute']
+            value = getattr(from_obj, attribute)
+            if isinstance(value, (tuple, list)):
+                for index, v in enumerate(copy(value)):
+                    if v.to_object == content:
+                        value.remove(v)
+                        value.insert(index, RelationValue(canonical_intid))
+
+                    setattr(from_obj, attribute, value)
+            else:
+                setattr(from_obj, attribute, RelationValue(canonical_intid))
+
+            modified(from_obj)
+
+    def _remove_content_object(self, content, canonical):
+        """Move subcontents and references of merged content and remove it
+        """
+        self._transfer_back_references(content, canonical)
+        cb = content.manage_cutObjects(content.keys())
+        canonical.manage_pasteObjects(cb)
+        IStatusMessage(self.request).add("%s has been removed" %
+                                         "/".join(content.getPhysicalPath()))
+        api.content.delete(content)
+
     def __call__(self):
         request = self.request
         values = copy(request.form)
@@ -106,58 +152,19 @@ class Merge(BrowserView):
         #  get canonical content
         canonical_uid = values.pop('path')
         canonical = api.content.get(UID=canonical_uid)
-        fields = dict([(field.__name__, field)
-                       for field in get_fields(canonical.portal_type)])
-
         # update fields
-        for field_name, uid in values.items():
-            if uid == canonical_uid:
-                continue
-            elif uid == 'empty':
-                delattr(canonical, field_name)
-            else:
-                origin = contents.get(uid)
-                field = fields[field_name]
-                IFieldValueCopy(field).transfer(origin, canonical)
+        self._transfer_field_values(values, contents, canonical)
 
-        # update back references of removed objects
-        intids = getUtility(IIntIds)
-        canonical_intid= intids.getId(canonical)
         for content in contents.values():
             if content == canonical:
                 continue
-
-            back_references = get_back_references(content)
-            for back_reference in back_references:
-                from_obj = back_reference['obj']
-                attribute = back_reference['attribute']
-                value = getattr(from_obj, attribute)
-                if isinstance(value, (tuple, list)):
-                    for index, v in enumerate(copy(value)):
-                        if v.to_object == content:
-                            value.remove(v)
-                            value.insert(index, RelationValue(canonical_intid))
-
-                        setattr(from_obj, attribute, value)
-                else:
-                    setattr(from_obj, attribute, RelationValue(canonical_intid))
-
-                modified(from_obj)
-
-        for content in contents.values():
-            if content != canonical:
-                cb = content.manage_cutObjects(content.keys())
-                canonical.manage_pasteObjects(cb)
-                IStatusMessage(request).add("%s has been removed" %
-                                            "/".join(content.getPhysicalPath()))
-                api.content.delete(content)
+            self._remove_content_object(content, canonical)
 
         # if we merge contacts, merge persons
         next_uids = ''
         if merge_hp_persons:
             next_uids = '&'.join([IUUID(content.get_person())
                                    for content in contents.values()])
-
         elif subcontent_uids:
             next_uids = subcontent_uids
 

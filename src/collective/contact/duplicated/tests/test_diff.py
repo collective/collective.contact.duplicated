@@ -77,12 +77,16 @@ class TestDiff(IntegrationTestCase):
         portal.REQUEST.form['uids'] = [degaulle_uid, pepper_uid]
         portal.REQUEST.form['path'] = degaulle_uid
         portal.REQUEST.form['country'] = pepper_uid
+        portal.REQUEST.form['firstname'] = degaulle_uid
         portal.REQUEST.form['city'] = 'empty'
+        portal.REQUEST.form['phone'] = degaulle_uid
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts-apply')()
 
         self.assertEqual(degaulle.country, 'England')
         self.assertEqual(degaulle.firstname, 'Charles')
         self.assertEqual(degaulle.city, None)
+        self.assertEqual(degaulle.phone, None)
+        self.assertEqual(degaulle.gender, 'M')
 
         # relations to pepper has been updated
         self.assertEqual(letter.relatedItems[0].to_object, degaulle)
@@ -91,3 +95,17 @@ class TestDiff(IntegrationTestCase):
         self.assertNotIn('pepper', portal.mydirectory)
         # and its held_positions has been moved in canonical
         self.assertIn('sergent_pepper', degaulle)
+
+    def test_diff_hp(self):
+        portal = self.layer['portal']
+        directory = portal.mydirectory
+        gal_degaulle_uid = IUUID(directory.degaulle.adt)
+        sgt_pepper_uid = IUUID(directory.pepper.sergent_pepper)
+        portal.REQUEST.form['uids'] = [gal_degaulle_uid, sgt_pepper_uid]
+        view = portal.mydirectory.unrestrictedTraverse('merge-contacts')
+        view.update()
+        self.assertTrue(view.merge_hp_persons)
+
+        portal.REQUEST.form['merge-hp-persons'] = '1'
+        portal.REQUEST.form['path'] = gal_degaulle_uid
+        view = portal.mydirectory.unrestrictedTraverse('merge-contacts-apply')()

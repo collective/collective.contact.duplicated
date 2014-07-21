@@ -18,10 +18,12 @@ PMF = MessageFactory('plone')
 
 EXCLUDED_FIELDS = ['parent_address']
 
+
 def _get_schema_fields(schema, names):
     return [schema[f] for f in names
             if f not in EXCLUDED_FIELDS
             and not schema[f].readonly]
+
 
 def non_fieldset_fields(schema):
     fieldset_fields = []

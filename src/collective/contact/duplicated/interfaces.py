@@ -4,6 +4,7 @@
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.interface import Interface
 
+
 class ICollectiveContactDuplicatedLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 

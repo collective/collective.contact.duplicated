@@ -26,8 +26,8 @@
       layer="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
       />
 
-
-   <include zcml:condition="installed collective.contact.facetednav"
-            package=".contactfaceted" />
+   <configure zcml:condition="installed collective.contact.facetednav">
+       <include package=".contactfaceted" />
+   </configure>
 
 </configure>

@@ -15,6 +15,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.namedfile.interfaces import INamedField, INamedImageField
 from plone.schemaeditor.schema import IChoice
 
+from collective.contact.widget.interfaces import IContactChoice
 from collective.contact.duplicated.interfaces import IFieldRenderer
 from collective.contact.duplicated import _
 
@@ -184,6 +185,7 @@ class RichTextFieldRenderer(BaseFieldRenderer):
 try:
     from z3c.relationfield.interfaces import IRelation
     HAS_RELATIONFIELD = True
+
     class RelationFieldRenderer(BaseFieldRenderer):
         adapts(IRelation)
 
@@ -201,6 +203,7 @@ except:
 try:
     from collective.z3cform.datagridfield.interfaces import IRow
     HAS_DATAGRIDFIELD = True
+
     class DictRowFieldRenderer(BaseFieldRenderer):
         adapts(IRow)
 
@@ -224,8 +227,6 @@ except:
     HAS_RELATIONFIELD = False
 
 
-from collective.contact.widget.interfaces import IContactChoice
-HAS_RELATIONFIELD = True
 class ContactChoiceFieldRenderer(BaseFieldRenderer):
     adapts(IContactChoice)
 
@@ -235,4 +236,3 @@ class ContactChoiceFieldRenderer(BaseFieldRenderer):
 
     def render_collection_entry(self, obj, value):
         return value and value.to_object and value.to_object.get_full_title() or u""
-
