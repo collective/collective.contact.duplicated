@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="collective.contact.facetednav">
+
+  <browser:viewlet
+      name="collective.contact.duplicated.facetednav.actions.merge"
+      manager="collective.contact.facetednav.browser.actions.manager.IBatchActions"
+      class=".action.MergeAction"
+      permission="zope2.DeleteObjects"
+      />
+
+</configure>

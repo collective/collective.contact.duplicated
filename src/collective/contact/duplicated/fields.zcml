@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="collective.documentfusion">
+
+    <adapter factory=".fields.FieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter factory=".fields.FileFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter factory=".fields.BooleanFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter factory=".fields.CollectionFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter factory=".fields.DateFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter factory=".fields.ChoiceFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter factory=".fields.RichTextFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter zcml:condition="installed z3c.relationfield"
+             factory=".fields.RelationFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter zcml:condition="installed collective.z3cform.datagridfield"
+             factory=".fields.DictRowFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+    <adapter zcml:condition="installed collective.contact.core"
+             factory=".fields.ContactChoiceFieldRenderer"
+             provides=".interfaces.IFieldRenderer" />
+
+</configure>

@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="collective.contact.duplicated">
+<body>
+
+<div metal:fill-slot="main">
+
+  <div id="viewlet-above-content-title" tal:content="structure provider:plone.abovecontenttitle" tal:condition="not:ajax_load" />
+  <div tal:replace="structure context/@@basefields" />
+
+  <div id="organizations" class="field" tal:condition="view/organizations">
+      <label><tal:block i18n:translate="">Organizations</tal:block>:</label>
+      <ul>
+      <tal:block tal:repeat="organization view/organizations">
+          <li><a class="link-tooltip" tal:attributes="href organization/absolute_url">
+              <span tal:replace="organization/Title"
+                    i18n:translate="" />
+          </a></li>
+      </tal:block>
+      </ul>
+  </div>
+
+  <div tal:replace="structure context/@@contactdetails" />
+
+  <div tal:replace="structure context/@@ttwfields" />
+
+  <metal:additional-fields use-macro="context/contact_core_macros/macros/additional-fields" />
+
+</div>
+
+</body>
+</html>
