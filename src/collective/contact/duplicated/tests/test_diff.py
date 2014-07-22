@@ -114,8 +114,8 @@ class TestDiff(IntegrationTestCase):
         self.assertEqual(position_diff[1]['render'],
                     u'Sergent de la brigade LH, Brigade LH (Arm\xe9e de terre)')
 
-        self.assertEqual(view.diff(view.fieldsets[0]['fields'][3])[0]['render'],
-                                   u'Nov 09, 1970')
+        self.assertIn('09',
+                      view.diff(view.fieldsets[0]['fields'][3])[0]['render'])
 
         portal.REQUEST.form['merge-hp-persons'] = '1'
         portal.REQUEST.form['path'] = gal_degaulle_uid
