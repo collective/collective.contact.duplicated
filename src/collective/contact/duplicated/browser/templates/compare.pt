@@ -82,7 +82,7 @@
    </table>
 
    <div tal:condition="view/merge_hp_persons">
-    <h3>Merge persons</h3>
+    <h3 i18n:translate="">Merge persons</h3>
     <input type="checkbox" checked="1" name="merge-hp-persons" value="1" />
     <label i18n:translate="help_merge_hp_persons">
     	Those held positions are stored into different person contents.
@@ -107,23 +107,27 @@
   </div>
   </div>
 
-   <div tal:condition="python: max([len(c['subcontents']) for c in view.contents]) > 0">
+   <div tal:define="have_subcontents python: max([len(c['subcontents']) for c in view.contents]) > 0;
+                    maybe_duplicated python:len([len(c['subcontents']) for c in view.contents if len(c['subcontents']) > 0 ]) > 1">
    <h3 i18n:translate="">Contents</h3>
-   <p class="discreet" i18n:translate="help_subcontents">
+   <p class="discreet" i18n:translate="help_subcontents" tal:condition="maybe_duplicated">
    All contents of the merged elements will be moved into the element selected as 'location'.
    If some of those contents have to be merged, check them and you will be redirected to a merge screen.
    </p>
-    <div tal:repeat="content view/contents">
+    <tal:content tal:repeat="content view/contents">
+     <div tal:condition="content/subcontents">
       <label tal:content="content/obj/Title"></label>
       <ul>
         <li tal:repeat="subcontent content/subcontents">
           <input type="checkbox" name="subcontent_uids:list"
+                 tal:condition="maybe_duplicated"
                  tal:attributes="value subcontent/UID" />
           <a target="new" tal:attributes="href subcontent/absolute_url"
              tal:content="subcontent/Title"></a>
         </li>
       </ul>
-  </div>
+     </div>
+    </tal:content>
    </div>
 
    <input type="submit" value="Merge contents" i18n:attributes="value" />

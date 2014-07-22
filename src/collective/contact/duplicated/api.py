@@ -3,7 +3,6 @@ from collections import OrderedDict
 from Acquisition import aq_inner
 from zope.intid.interfaces import IIntIds
 from zope.component import getUtility
-from zope.i18nmessageid.message import MessageFactory
 from zope.schema import getFieldsInOrder
 
 from zc.relation.interfaces import ICatalog
@@ -13,11 +12,10 @@ from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.supermodel.interfaces import FIELDSETS_KEY
 
+from collective.contact.duplicated import _
 
-PMF = MessageFactory('plone')
 
 EXCLUDED_FIELDS = ['parent_address']
-
 
 def _get_schema_fields(schema, names):
     return [schema[f] for f in names
@@ -41,7 +39,7 @@ def get_fieldsets(portal_type):
     schema = fti.lookupSchema()
     fieldsets_dict = OrderedDict({'default':
                                   {'id': 'default',
-                                   'title': PMF(u'Default'),
+                                   'title': _(u'Default'),
                                    'fields': _get_schema_fields(schema,
                                                    non_fieldset_fields(schema))}
                                   })

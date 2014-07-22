@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-07-22 08:44+0000\n"
+"POT-Creation-Date: 2014-07-22 09:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,6 +22,10 @@ msgstr "Références à ces contenus"
 msgid "Contents"
 msgstr "Contenus"
 
+#: ../api.py:42
+msgid "Default"
+msgstr "Défaut"
+
 #: ../browser/templates/compare.pt:29
 msgid "Location"
 msgstr "Emplacement"
@@ -34,13 +38,17 @@ msgstr "Fusionner les éléments"
 msgid "Merge duplicated"
 msgstr "Fusionner les doublons"
 
+#: ../browser/templates/compare.pt:85
+msgid "Merge persons"
+msgstr "Fusionner les personnes"
+
 #: ../fields.py:106
 msgid "No"
 msgstr "Non"
 
 #: ../browser/templates/compare.pt:71
 msgid "Set empty"
-msgstr "Vider"
+msgstr "Vider le champ"
 
 #: ../fields.py:106
 msgid "Yes"

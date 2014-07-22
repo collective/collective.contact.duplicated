@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-07-22 08:44+0000\n"
+"POT-Creation-Date: 2014-07-22 09:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,6 +25,10 @@ msgstr ""
 msgid "Contents"
 msgstr ""
 
+#: ../api.py:42
+msgid "Default"
+msgstr ""
+
 #: ../browser/templates/compare.pt:29
 msgid "Location"
 msgstr ""
@@ -35,6 +39,10 @@ msgstr ""
 
 #: ../browser/contactfaceted/action.py:7
 msgid "Merge duplicated"
+msgstr ""
+
+#: ../browser/templates/compare.pt:85
+msgid "Merge persons"
 msgstr ""
 
 #: ../fields.py:106

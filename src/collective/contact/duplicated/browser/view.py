@@ -164,10 +164,10 @@ class Merge(BrowserView):
         modified(canonical)
 
         # if we merge contacts, merge persons
-        next_uids = ''
+        next_uids = []
         if merge_hp_persons:
-            next_uids = '&'.join([IUUID(content.get_person())
-                                   for content in contents.values()])
+            next_uids = [IUUID(content.get_person())
+                         for content in contents.values()]
         elif subcontent_uids:
             next_uids = subcontent_uids
 

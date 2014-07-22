@@ -1,5 +1,5 @@
 from collective.contact.facetednav.browser.actions.base import BatchActionBase
-from collective.contact.facetednav import _
+from collective.contact.duplicated import _
 
 
 class MergeAction(BatchActionBase):
