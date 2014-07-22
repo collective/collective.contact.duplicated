@@ -1,0 +1,66 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2014-07-22 08:44+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.contact.duplicated\n"
+
+#: ../browser/templates/compare.pt:93
+msgid "Back references"
+msgstr ""
+
+#: ../browser/templates/compare.pt:111
+msgid "Contents"
+msgstr ""
+
+#: ../browser/templates/compare.pt:29
+msgid "Location"
+msgstr ""
+
+#: ../browser/templates/compare.pt:129
+msgid "Merge contents"
+msgstr ""
+
+#: ../browser/contactfaceted/action.py:7
+msgid "Merge duplicated"
+msgstr ""
+
+#: ../fields.py:106
+msgid "No"
+msgstr ""
+
+#: ../browser/templates/compare.pt:71
+msgid "Set empty"
+msgstr ""
+
+#: ../fields.py:106
+msgid "Yes"
+msgstr ""
+
+#. Default: "For your information : all contents that refer to merged elements will be updated with the one which has been selected as 'location'."
+#: ../browser/templates/compare.pt:94
+msgid "help_back_references"
+msgstr ""
+
+#. Default: "Those held positions are stored into different person contents. Also merge persons."
+#: ../browser/templates/compare.pt:87
+msgid "help_merge_hp_persons"
+msgstr ""
+
+#. Default: "All contents of the merged elements will be moved into the element selected as 'location'. If some of those contents have to be merged, check them and you will be redirected to a merge screen."
+#: ../browser/templates/compare.pt:112
+msgid "help_subcontents"
+msgstr ""
+
