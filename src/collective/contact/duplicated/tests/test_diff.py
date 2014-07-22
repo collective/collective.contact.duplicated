@@ -38,6 +38,7 @@ class TestDiff(IntegrationTestCase):
         fieldsets = view.fieldsets
         self.assertListEqual([fs['id'] for fs in fieldsets],
                              ['default', 'contact_details', 'address'])
+        self.assertEqual(len(view.contents[0]['subcontents']), 2)
 
         # different on each content
         self.assertEqual(view.diff(view.fieldsets[0]['fields'][0]),
@@ -93,8 +94,11 @@ class TestDiff(IntegrationTestCase):
 
         # pepper has been removed
         self.assertNotIn('pepper', portal.mydirectory)
+
         # and its held_positions has been moved in canonical
         self.assertIn('sergent_pepper', degaulle)
+        self.assertIn('adt', degaulle)
+        self.assertIn('gadt', degaulle)
 
     def test_diff_hp(self):
         portal = self.layer['portal']
@@ -105,7 +109,18 @@ class TestDiff(IntegrationTestCase):
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts')
         view.update()
         self.assertTrue(view.merge_hp_persons)
+        position_diff = view.diff(view.fieldsets[0]['fields'][0])
+        self.assertEqual(position_diff[0]['render'], u'Arm\xe9e de terre')
+        self.assertEqual(position_diff[1]['render'],
+                    u'Sergent de la brigade LH, Brigade LH (Arm\xe9e de terre)')
+
+        self.assertEqual(view.diff(view.fieldsets[0]['fields'][3])[0]['render'],
+                                   u'Nov 09, 1970')
 
         portal.REQUEST.form['merge-hp-persons'] = '1'
         portal.REQUEST.form['path'] = gal_degaulle_uid
+        portal.REQUEST.form['position'] = sgt_pepper_uid
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts-apply')()
+
+        self.assertEqual(directory.degaulle.adt.position.to_object.id,
+                         'sergent_lh')

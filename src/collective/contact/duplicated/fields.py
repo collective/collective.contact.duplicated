@@ -9,11 +9,13 @@ from zope.interface.declarations import implements
 from zope.schema import getFieldsInOrder
 
 from z3c.form.interfaces import NO_VALUE
+from z3c.relationfield.interfaces import IRelation
 
 from Products.CMFCore.utils import getToolByName
 from plone.app.textfield.interfaces import IRichText
 from plone.namedfile.interfaces import INamedField, INamedImageField
 from plone.schemaeditor.schema import IChoice
+from plone.dexterity.utils import datify
 
 from collective.contact.widget.interfaces import IContactChoice
 from collective.contact.duplicated.interfaces import IFieldRenderer
@@ -107,6 +109,12 @@ class BooleanFieldRenderer(BaseFieldRenderer):
 class DateFieldRenderer(BaseFieldRenderer):
     adapts(IDate)
 
+    def render(self, obj):
+        value = self.get_value(obj)
+        datetime = datify(value)
+        tlc = obj.unrestrictedTraverse('@@plone').toLocalizedTime
+        return translate(tlc(datetime))
+
     def render_collection_entry(self, obj, value):
         return value.strftime("%Y/%m/%d")
 
@@ -182,22 +190,15 @@ class RichTextFieldRenderer(BaseFieldRenderer):
             return text[:47] + u"..."
 
 
-try:
-    from z3c.relationfield.interfaces import IRelation
-    HAS_RELATIONFIELD = True
+class RelationFieldRenderer(BaseFieldRenderer):
+    adapts(IRelation)
 
-    class RelationFieldRenderer(BaseFieldRenderer):
-        adapts(IRelation)
+    def render(self, obj):
+        value = self.get_value(obj)
+        return self.render_collection_entry(obj, value)
 
-        def render(self, obj):
-            value = self.get_value(obj)
-            return self.render_collection_entry(obj, value)
-
-        def render_collection_entry(self, obj, value):
-            return value and value.to_object and value.to_object.Title() or u""
-
-except:
-    HAS_RELATIONFIELD = False
+    def render_collection_entry(self, obj, value):
+        return value and value.to_object and value.to_object.Title() or u""
 
 
 try:
@@ -224,7 +225,7 @@ try:
             return self.render_collection_entry(obj, value)
 
 except:
-    HAS_RELATIONFIELD = False
+    HAS_DATAGRIDFIELD = False
 
 
 class ContactChoiceFieldRenderer(BaseFieldRenderer):

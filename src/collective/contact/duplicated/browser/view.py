@@ -152,6 +152,7 @@ class Merge(BrowserView):
         #  get canonical content
         canonical_uid = values.pop('path')
         canonical = api.content.get(UID=canonical_uid)
+
         # update fields
         self._transfer_field_values(values, contents, canonical)
 
@@ -159,6 +160,8 @@ class Merge(BrowserView):
             if content == canonical:
                 continue
             self._remove_content_object(content, canonical)
+
+        modified(canonical)
 
         # if we merge contacts, merge persons
         next_uids = ''
