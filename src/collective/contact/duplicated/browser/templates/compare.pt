@@ -66,6 +66,7 @@
 				   tal:content="structure item/render"></label>
 	      </td>
 	      <td class="cell-delete">
+	       <tal:empty condition="not:field/required">
 			<label tal:attributes="name field/__name__;
 			                       for string:${field/__name__}-empty;">
 			    <img src="delete_icon.png" title="Set empty"
@@ -75,6 +76,7 @@
 			                       name field/__name__;
 			                       id string:${field/__name__}-empty;"
 			        value="empty" />
+		   </tal:empty>
 		  </td>
 	    </tr>
 	   </tal:fields>
