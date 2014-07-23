@@ -108,7 +108,8 @@
   </div>
 
    <div tal:define="have_subcontents python: max([len(c['subcontents']) for c in view.contents]) > 0;
-                    maybe_duplicated python:len([len(c['subcontents']) for c in view.contents if len(c['subcontents']) > 0 ]) > 1">
+                    maybe_duplicated python:len([len(c['subcontents']) for c in view.contents if len(c['subcontents']) > 0 ]) > 1"
+        tal:condition="have_subcontents">
    <h3 i18n:translate="">Contents</h3>
    <p class="discreet" i18n:translate="help_subcontents" tal:condition="maybe_duplicated">
    All contents of the merged elements will be moved into the element selected as 'location'.
