@@ -11,8 +11,7 @@ from plone import api
 from plone.uuid.interfaces import IUUID
 
 from collective.contact.core.content.held_position import IHeldPosition
-from collective.contact.duplicated.interfaces import IFieldRenderer
-from collective.contact.duplicated.interfaces import IFieldValueCopy
+from collective.contact.duplicated.interfaces import IFieldDiff
 from collective.contact.duplicated.api import get_back_references,\
     get_fieldsets, get_fields
 from Products.statusmessages.interfaces import IStatusMessage
@@ -50,11 +49,11 @@ class Compare(BrowserView):
                 self.merge_hp_persons = True
 
     def diff(self, field):
+        field_diff = IFieldDiff(field)
         values = [getattr(c['obj'], field.__name__) for c in self.contents]
-
         #  check if at least two values differ
         for index, value in enumerate(values[:-1]):
-            if value != values[index + 1]:
+            if field_diff.is_different(value, values[index + 1]):
                 differing = True
                 break
         else:
@@ -67,8 +66,8 @@ class Compare(BrowserView):
         one_selected = False  # we select by default the first value that is set
         for index, content in enumerate(self.contents):
             value = values[index]
-            render = IFieldRenderer(field).render(content['obj'])
-            if render is None:
+            render = field_diff.render(content['obj'])
+            if render is None or render == '':
                 selectable = False
                 selected = False
             elif not differing:
@@ -107,7 +106,7 @@ class Merge(BrowserView):
             else:
                 origin = contents.get(uid)
                 field = fields[field_name]
-                IFieldValueCopy(field).transfer(origin, canonical)
+                IFieldDiff(field).copy(origin, canonical)
 
     def _transfer_back_references(self, content, canonical):
         """Update back references of removed objects

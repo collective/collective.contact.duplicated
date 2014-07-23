@@ -9,19 +9,18 @@ class ICollectiveContactDuplicatedLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
-class IFieldRenderer(Interface):
-    """Adapts a zope.schema field to render content on screen
+class IFieldDiff(Interface):
+    """Adapts a zope.schema field to provide diff helpers
     """
+
+    def is_different(self, value1, value2):
+        """Returns True or any information if value1 and value2 differ
+        return False if value1 and value2 are equal
+        """
 
     def render(self, content):
         """Render field value on compare screen
         """
-
-
-class IFieldValueCopy(Interface):
-    """Adapts a zope.schema field to provide tool to transfer a value
-    from a content to an other
-    """
 
     def copy(self, source, target):
         """Transfer the field value from source object to target object

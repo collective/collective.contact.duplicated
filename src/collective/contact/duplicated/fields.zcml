@@ -4,42 +4,39 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="collective.contact.duplicated">
 
-    <adapter factory=".fields.FieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.FieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.FileFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.FileFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.ImageFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.ImageFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.BooleanFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.BooleanFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.CollectionFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.CollectionFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.DateFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.DateFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.ChoiceFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.ChoiceFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.RichTextFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+    <adapter factory=".fields.RichTextFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
     <adapter zcml:condition="installed z3c.relationfield"
-             factory=".fields.RelationFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+             factory=".fields.RelationFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
     <adapter zcml:condition="installed collective.z3cform.datagridfield"
-             factory=".fields.DictRowFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
+             factory=".fields.DictRowFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
-    <adapter factory=".fields.ContactChoiceFieldRenderer"
-             provides=".interfaces.IFieldRenderer" />
-
-    <adapter factory=".fields.FieldValueCopy"
-             provides=".interfaces.IFieldValueCopy" />
+    <adapter factory=".fields.ContactChoiceFieldDiff"
+             provides=".interfaces.IFieldDiff" />
 
 </configure>

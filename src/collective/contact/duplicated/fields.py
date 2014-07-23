@@ -16,14 +16,15 @@ from plone.app.textfield.interfaces import IRichText
 from plone.namedfile.interfaces import INamedField, INamedImageField
 from plone.schemaeditor.schema import IChoice
 from plone.dexterity.utils import datify
+from plone.uuid.interfaces import IUUID
 
 from collective.contact.widget.interfaces import IContactChoice
-from collective.contact.duplicated.interfaces import IFieldRenderer
+from collective.contact.duplicated.interfaces import IFieldDiff
 from collective.contact.duplicated import _
 
 
-class BaseFieldRenderer(object):
-    implements(IFieldRenderer)
+class BaseFieldDiff(object):
+    implements(IFieldDiff)
 
     def __init__(self, field):
         self.field = field
@@ -48,31 +49,19 @@ class BaseFieldRenderer(object):
         """
         return str(value or "")
 
+    def is_different(self, value1, value2):
+        return value1 != value2  # @TODO: get a diff
 
-class FieldRenderer(BaseFieldRenderer):
-    adapts(IField)
-
-
-class BaseFieldValueCopy(object):
-
-    def __init__(self, field):
-        self.field = field
-        self.name = self.field.__name__
-
-    def __repr__(self):
-        return "<%s - %s>" % (self.__class__.__name__,
-                              self.name)
-
-    def transfer(self, source, target):
+    def copy(self, source, target):
         source_value = getattr(aq_base(source), self.name, None)
         setattr(target, self.name, source_value)
 
 
-class FieldValueCopy(BaseFieldValueCopy):
+class FieldDiff(BaseFieldDiff):
     adapts(IField)
 
 
-class FileFieldRenderer(BaseFieldRenderer):
+class FileFieldDiff(BaseFieldDiff):
     adapts(INamedField)
 
     def render(self, obj):
@@ -82,7 +71,7 @@ class FileFieldRenderer(BaseFieldRenderer):
         return value and value.filename or ""
 
 
-class ImageFieldRenderer(BaseFieldRenderer):
+class ImageFieldDiff(BaseFieldDiff):
     adapts(INamedImageField)
 
     def render(self, obj):
@@ -98,15 +87,18 @@ class ImageFieldRenderer(BaseFieldRenderer):
                         'url': url, 'title': value.filename}
 
 
-class BooleanFieldRenderer(BaseFieldRenderer):
+class BooleanFieldDiff(BaseFieldDiff):
     adapts(IBool)
 
     def render(self, obj):
         value = self.get_value(obj)
+        if value in (NO_VALUE, None):
+            return u""
+
         return value and _(u"Yes") or _(u"No")
 
 
-class DateFieldRenderer(BaseFieldRenderer):
+class DateFieldDiff(BaseFieldDiff):
     adapts(IDate)
 
     def render(self, obj):
@@ -119,7 +111,7 @@ class DateFieldRenderer(BaseFieldRenderer):
         return value.strftime("%Y/%m/%d")
 
 
-class ChoiceFieldRenderer(BaseFieldRenderer):
+class ChoiceFieldDiff(BaseFieldDiff):
     adapts(IChoice)
 
     def _get_vocabulary_value(self, obj, value):
@@ -159,8 +151,14 @@ class ChoiceFieldRenderer(BaseFieldRenderer):
         return voc_value and translate(voc_value, context=obj.REQUEST) or u""
 
 
-class CollectionFieldRenderer(BaseFieldRenderer):
+class CollectionFieldDiff(BaseFieldDiff):
     adapts(ICollection)
+
+    def is_different(self, value1, value2):
+        if not value1 and not value2:  # None, [], () are the same
+            return False
+        else:
+            return super(CollectionFieldDiff, self).is_different(value1, value2)
 
     def render(self, obj):
         """Gets the value to render in excel file from content value
@@ -169,12 +167,12 @@ class CollectionFieldRenderer(BaseFieldRenderer):
         if value == []:
             return None
 
-        sub_renderer = IFieldRenderer(self.field.value_type)
-        return value and u", ".join([sub_renderer.render_collection_entry(obj, v)
+        sub_Diff = IFieldDiff(self.field.value_type)
+        return value and u", ".join([sub_Diff.render_collection_entry(obj, v)
                                      for v in value]) or u""
 
 
-class RichTextFieldRenderer(BaseFieldRenderer):
+class RichTextFieldDiff(BaseFieldDiff):
     adapts(IRichText)
 
     def render(self, obj):
@@ -190,32 +188,46 @@ class RichTextFieldRenderer(BaseFieldRenderer):
             return text[:47] + u"..."
 
 
-class RelationFieldRenderer(BaseFieldRenderer):
+class RelationFieldDiff(BaseFieldDiff):
     adapts(IRelation)
+
+    def is_different(self, value1, value2):
+        if value1 is None and value2 is None:
+            return False
+        elif value1 is None:
+            return False
+        elif value2 is None:
+            return False
+        else:
+            return IUUID(value1.to_object) != IUUID(value2.to_object)
 
     def render(self, obj):
         value = self.get_value(obj)
         return self.render_collection_entry(obj, value)
 
     def render_collection_entry(self, obj, value):
-        return value and value.to_object and value.to_object.Title() or u""
+        if not value:
+            return u""
+        obj = value.to_object
+        return """<a href="%s" target="new">%s</a>""" % (obj.absolute_url(),
+                                                         obj.Title())
 
 
 try:
     from collective.z3cform.datagridfield.interfaces import IRow
     HAS_DATAGRIDFIELD = True
 
-    class DictRowFieldRenderer(BaseFieldRenderer):
+    class DictRowFieldDiff(BaseFieldDiff):
         adapts(IRow)
 
         def render_collection_entry(self, obj, value):
             fields = getFieldsInOrder(self.field.schema)
             field_renderings = []
             for fieldname, field in fields:
-                sub_renderer = IFieldRenderer(field)
+                sub_Diff = IFieldDiff(field)
                 field_renderings.append(u"%s : %s" % (
-                                        sub_renderer.render_header(),
-                                        sub_renderer.render_collection_entry(obj,
+                                        sub_Diff.render_header(),
+                                        sub_Diff.render_collection_entry(obj,
                                                 value.get(fieldname))))
 
             return u" / ".join([r for r in field_renderings])
@@ -228,12 +240,12 @@ except:
     HAS_DATAGRIDFIELD = False
 
 
-class ContactChoiceFieldRenderer(BaseFieldRenderer):
+class ContactChoiceFieldDiff(RelationFieldDiff):
     adapts(IContactChoice)
 
-    def render(self, obj):
-        value = self.get_value(obj)
-        return self.render_collection_entry(obj, value)
-
     def render_collection_entry(self, obj, value):
-        return value and value.to_object and value.to_object.get_full_title() or u""
+        if not value:
+            return u""
+        obj = value.to_object
+        return """<a href="%s" target="new">%s</a>""" % (obj.absolute_url(),
+                                                         obj.get_full_title())

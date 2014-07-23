@@ -110,9 +110,12 @@ class TestDiff(IntegrationTestCase):
         view.update()
         self.assertTrue(view.merge_hp_persons)
         position_diff = view.diff(view.fieldsets[0]['fields'][0])
-        self.assertEqual(position_diff[0]['render'], u'Arm\xe9e de terre')
+        self.assertEqual(position_diff[0]['render'],
+                         u"""<a href="http://nohost/plone/mydirectory/armeedeterre" """
+                         u"""target="new">Armée de terre</a>""")
         self.assertEqual(position_diff[1]['render'],
-                    u'Sergent de la brigade LH, Brigade LH (Arm\xe9e de terre)')
+            u"""<a href="http://nohost/plone/mydirectory/armeedeterre/corpsa/divisionalpha/regimenth/brigadelh/sergent_lh" """
+            u"""target="new">Sergent de la brigade LH, Brigade LH (Armée de terre)</a>""")
 
         self.assertIn('09',
                       view.diff(view.fieldsets[0]['fields'][3])[0]['render'])
