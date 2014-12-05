@@ -14,11 +14,11 @@ on "Merge duplicated" button.
 Tests
 =====
 
-.. image:: https://secure.travis-ci.org/tdesvenain/collective.contact.duplicated.png
-    :target: http://travis-ci.org/tdesvenain/collective.contact.duplicated
+.. image:: https://secure.travis-ci.org/collective/collective.contact.duplicated.png
+    :target: http://travis-ci.org/collective/collective.contact.duplicated
 
-.. image:: https://coveralls.io/repos/tdesvenain/collective.contact.duplicated/badge.png?branch=master
-    :target: https://coveralls.io/r/tdesvenain/collective.contact.duplicated?branch=master
+.. image:: https://coveralls.io/repos/collective/collective.contact.duplicated/badge.png?branch=master
+    :target: https://coveralls.io/r/collective/collective.contact.duplicated?branch=master
 
 Extend
 ======
