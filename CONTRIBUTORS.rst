@@ -1,1 +1,2 @@
 - Thomas Desvenain, thomas.desvenain@gmail.com
+- Eric Brehault, ebrehault@gmail.com

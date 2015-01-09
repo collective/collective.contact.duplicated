@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-07-22 09:19+0000\n"
+"POT-Creation-Date: 2015-01-09 13:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,11 +14,11 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
-#: ../browser/templates/compare.pt:93
+#: ../browser/templates/compare.pt:102
 msgid "Back references"
 msgstr "Références à ces contenus"
 
-#: ../browser/templates/compare.pt:111
+#: ../browser/templates/compare.pt:122
 msgid "Contents"
 msgstr "Contenus"
 
@@ -30,7 +30,7 @@ msgstr "Défaut"
 msgid "Location"
 msgstr "Emplacement"
 
-#: ../browser/templates/compare.pt:129
+#: ../browser/templates/compare.pt:143
 msgid "Merge contents"
 msgstr "Fusionner les éléments"
 
@@ -38,34 +38,39 @@ msgstr "Fusionner les éléments"
 msgid "Merge duplicated"
 msgstr "Fusionner les doublons"
 
-#: ../browser/templates/compare.pt:85
+#: ../browser/templates/compare.pt:87
 msgid "Merge persons"
 msgstr "Fusionner les personnes"
 
-#: ../fields.py:106
+#: ../fields.py:98
 msgid "No"
 msgstr "Non"
 
-#: ../browser/templates/compare.pt:71
+#: ../browser/templates/compare.pt:72
 msgid "Set empty"
 msgstr "Vider le champ"
 
-#: ../fields.py:106
+#: ../fields.py:98
 msgid "Yes"
 msgstr "Oui"
 
 #. Default: "For your information : all contents that refer to merged elements will be updated with the one which has been selected as 'location'."
-#: ../browser/templates/compare.pt:94
+#: ../browser/templates/compare.pt:103
 msgid "help_back_references"
 msgstr "Pour information : tous les contenus qui font référence aux éléments fusionnés seront mis à jour avec celui qui a été sélectionné comme 'emplacement'."
 
 #. Default: "Those held positions are stored into different person contents. Also merge persons."
-#: ../browser/templates/compare.pt:87
+#: ../browser/templates/compare.pt:89
 msgid "help_merge_hp_persons"
 msgstr "Ces positions occupées sont stockées dans des personnes différentes. Si vous cochez cette case vous serez redirigé ensuite vers un écran de fusion de ces personnes."
 
+#. Default: "If you do not want to merge those held positions, you can move directly to person merging"
+#: ../browser/templates/compare.pt:93
+msgid "help_merge_hp_persons_directly"
+msgstr "Si vous ne souhaitez pas fusionner les positions, vous pouvez aller directement à la fusion des personnes"
+
 #. Default: "All contents of the merged elements will be moved into the element selected as 'location'. If some of those contents have to be merged, check them and you will be redirected to a merge screen."
-#: ../browser/templates/compare.pt:112
+#: ../browser/templates/compare.pt:123
 msgid "help_subcontents"
 msgstr "Tous les contenus des éléments fusionnés seront déplacés dans l'élément sélectionné comme 'emplacement'. Si vous souhaitez fusionner certains de ces contenus, sélectionnez-les et vous serez redirigés vers un nouvel écran de résolution."
 

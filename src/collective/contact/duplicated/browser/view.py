@@ -47,6 +47,9 @@ class Compare(BrowserView):
             person_uids = [IUUID(hp['obj'].get_person()) for hp in self.contents]
             if len(set(person_uids)) > 1:
                 self.merge_hp_persons = True
+                self.merge_person_url = "%s/merge-contacts?%s" % (
+                    self.context.absolute_url(),
+                    '&'.join(['uids:list=%s' % uid for uid in person_uids]))
 
     def diff(self, field):
         field_diff = IFieldDiff(field)

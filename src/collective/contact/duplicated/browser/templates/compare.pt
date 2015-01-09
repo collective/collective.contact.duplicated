@@ -89,6 +89,14 @@
     <label i18n:translate="help_merge_hp_persons">
     	Those held positions are stored into different person contents.
     	Also merge persons.</label>
+      <div>
+        <span i18n:translate="help_merge_hp_persons_directly">
+          If you do not want to merge those held positions,
+          you can move directly to person merging
+        </span>
+        <a i18n:translate=""
+          tal:attributes="href view/merge_person_url">Merge persons</a>
+      </div>
    </div>
 
    <div tal:condition="python: max([len(c['back_references']) for c in view.contents]) > 0">
