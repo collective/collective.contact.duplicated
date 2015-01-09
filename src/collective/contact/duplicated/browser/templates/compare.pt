@@ -83,7 +83,7 @@
 	  </tal:fieldsets>
    </table>
 
-   <div tal:condition="view/merge_hp_persons">
+   <div tal:condition="view/merge_hp_persons" id="hp-person-merge">
     <h3 i18n:translate="">Merge persons</h3>
     <input type="checkbox" checked="1" name="merge-hp-persons" value="1" />
     <label i18n:translate="help_merge_hp_persons">
