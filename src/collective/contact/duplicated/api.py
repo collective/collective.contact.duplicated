@@ -85,8 +85,11 @@ def get_back_references(source_object):
     source_intid = intids.getId(aq_inner(source_object))
     result = []
     for rel in catalog.findRelations({'to_id': source_intid}):
-        obj = intids.queryObject(rel.from_id)
-        result.append({'obj': obj,
-                       'attribute': rel.from_attribute})
-
+        from_id = getattr(rel, '_from_id', None)
+        if not from_id:
+            from_id = rel.from_id
+        obj = intids.queryObject(from_id)
+        if obj:
+            result.append({'obj': obj,
+                           'attribute': rel.from_attribute})
     return result
