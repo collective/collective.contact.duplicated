@@ -2,6 +2,8 @@
 collective.contact.duplicated
 =============================
 
+This add-on is part of the ``collective.contact.*`` suite. For an overview and a demo of these suite, see `collective.contact.demo <https://github.com/collective/collective.contact.demo>`__.
+
 Add a view to manage contact duplications.
 
 Install
