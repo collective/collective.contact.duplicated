@@ -5,7 +5,8 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix plone.protect compliancy
+  [ebrehault]
 
 
 0.1 (2015-06-02)

@@ -102,6 +102,8 @@ class Merge(BrowserView):
                        for field in get_fields(canonical.portal_type)])
         canonical_uid = IUUID(canonical)
         for field_name, uid in values.items():
+            if field_name == '_authenticator':
+                continue
             if uid == canonical_uid:
                 continue
             elif uid == 'empty':
