@@ -8,7 +8,7 @@
       name="collective.contact.duplicated.facetednav.actions.merge"
       manager="collective.contact.facetednav.browser.actions.manager.IBatchActions"
       class=".action.MergeAction"
-      permission="zope2.DeleteObjects"
+      permission="cmf.AddPortalContent"
       layer="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
       />
 
