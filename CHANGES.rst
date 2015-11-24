@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.2 (unreleased)
+0.2 (2015-11-24)
 ----------------
 
 - Fix plone.protect compliancy
