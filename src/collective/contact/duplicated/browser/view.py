@@ -119,7 +119,7 @@ class Merge(BrowserView):
                        for field in get_fields(canonical.portal_type)])
         canonical_uid = IUUID(canonical)
         for field_name, uid in values.items():
-            if field_name == '_authenticator':
+            if field_name == '_authenticator' or field_name == 'data':
                 continue
             if uid == canonical_uid:
                 continue
@@ -167,8 +167,18 @@ class Merge(BrowserView):
         values = copy(request.form)
         merge_hp_persons = values.pop('merge-hp-persons', False)
         subcontent_uids = values.pop('subcontent_uids', False)
-        contents = dict([(uid, api.content.get(UID=uid))
-                         for uid in values.pop('uids')])
+
+        extra = values.get('data', None)
+        if extra:
+            extra = json.loads(extra)
+            del values['data']
+
+        contents = {}
+        for uid in values.pop('uids'):
+            if uid == 'TEMP' and extra:
+                contents[uid] = extra
+            else:
+                contents[uid] = api.content.get(UID=uid)
 
         #  get canonical content
         canonical_uid = values.pop('path')
@@ -177,8 +187,8 @@ class Merge(BrowserView):
         # update fields
         self._transfer_field_values(values, contents, canonical)
 
-        for content in contents.values():
-            if content == canonical:
+        for (uid, content) in contents.items():
+            if content == canonical or uid == 'TEMP':
                 continue
             self._remove_content_object(content, canonical)
 
@@ -187,8 +197,10 @@ class Merge(BrowserView):
         # if we merge contacts, merge persons
         next_uids = []
         if merge_hp_persons:
-            next_uids = [IUUID(content.get_person())
-                         for content in contents.values()]
+            for content in contents.values():
+                if type(content) is dict: # data field
+                    continue
+                next_uids.append(IUUID(content.get_person()))
         elif subcontent_uids:
             next_uids = subcontent_uids
 

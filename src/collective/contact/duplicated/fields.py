@@ -53,7 +53,11 @@ class BaseFieldDiff(object):
         return value1 != value2  # @TODO: get a diff
 
     def copy(self, source, target):
-        source_value = getattr(aq_base(source), self.name, None)
+        source_value = None
+        if type(aq_base(source)) == dict: # data field
+            source_value = aq_base(source)[self.name]
+        else:
+            source_value = getattr(aq_base(source), self.name, None)
         setattr(target, self.name, source_value)
 
 

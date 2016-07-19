@@ -13,6 +13,9 @@
       tal:define="update view/update;
                   colnum python:len(view.contents)">
 
+    <input type="hidden" name="data"
+           tal:attributes="value python:request.get('data', None)" />
+
     <table class="listing nosort">
      <thead>
       <tr>
