@@ -35,7 +35,7 @@ class BaseFieldDiff(object):
                               self.name)
 
     def get_value(self, obj):
-        return getattr(obj, self.name)
+        return getattr(obj, self.name, None)
 
     def render(self, obj):
         value = self.get_value(obj)

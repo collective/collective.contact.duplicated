@@ -1,4 +1,6 @@
+from collections import namedtuple
 from copy import copy
+import json
 
 from zope.intid.interfaces import IIntIds
 from zExceptions import NotFound
@@ -28,11 +30,24 @@ class Compare(BrowserView):
         # one content type
         assert len(set([b.portal_type for b in contents])) == 1
         content_objs = [c.getObject() for c in contents]
-        return [{'obj': obj,
+
+        data = [{'obj': obj,
                  'uid': IUUID(obj),
                  'path': '/'.join(obj.getPhysicalPath()),
                  'back_references': get_back_references(obj),
                  'subcontents': obj.values()} for obj in content_objs]
+        # add extra data as temporary object
+        extra = self.request.get('data', None)
+        if extra:
+            extra = json.loads(extra)
+            data_obj = namedtuple('mystruct', extra.keys())(**extra)
+            data.append({
+                'obj': data_obj,
+                'uid': 'TEMP',
+                'back_references': [],
+                'subcontents': [],
+            })
+        return data
 
     def update(self):
         self.contents = self.get_contents()
@@ -44,7 +59,8 @@ class Compare(BrowserView):
         # then we can also merge the persons
         self.merge_hp_persons = False
         if IHeldPosition.providedBy(first):
-            person_uids = [IUUID(hp['obj'].get_person()) for hp in self.contents]
+            person_uids = [IUUID(hp['obj'].get_person())
+                for hp in self.contents if hp['uid'] != 'TEMP']
             if len(set(person_uids)) > 1:
                 self.merge_hp_persons = True
                 self.merge_person_url = "%s/merge-contacts?%s" % (
@@ -53,14 +69,15 @@ class Compare(BrowserView):
 
     def diff(self, field):
         field_diff = IFieldDiff(field)
-        values = [getattr(c['obj'], field.__name__) for c in self.contents]
+        values = [getattr(c['obj'], field.__name__, None)
+            for c in self.contents]
         #  check if at least two values differ
         for index, value in enumerate(values[:-1]):
             if field_diff.is_different(value, values[index + 1]):
                 differing = True
                 break
         else:
-            if value:  # set and all the same
+            if len(values) > 0 and value:  # set and all the same
                 differing = False
             else:  # not set
                 return None
