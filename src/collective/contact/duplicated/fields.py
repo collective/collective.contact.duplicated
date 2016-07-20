@@ -54,7 +54,7 @@ class BaseFieldDiff(object):
 
     def copy(self, source, target):
         source_value = None
-        if type(aq_base(source)) == dict: # data field
+        if type(aq_base(source)) is dict: # data field
             source_value = aq_base(source)[self.name]
         else:
             source_value = getattr(aq_base(source), self.name, None)
@@ -107,6 +107,8 @@ class DateFieldDiff(BaseFieldDiff):
 
     def render(self, obj):
         value = self.get_value(obj)
+        if value in (NO_VALUE, None):
+            return u""
         datetime = datify(value)
         tlc = obj.unrestrictedTraverse('@@plone').toLocalizedTime
         return translate(tlc(datetime))
@@ -120,6 +122,9 @@ class ChoiceFieldDiff(BaseFieldDiff):
 
     def _get_vocabulary_value(self, obj, value):
         if not value:
+            return value
+
+        if obj.__class__.__name__ is 'mystruct':
             return value
 
         vocabulary = self.field.vocabulary

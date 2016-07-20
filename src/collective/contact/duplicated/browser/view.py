@@ -7,6 +7,7 @@ from zExceptions import NotFound
 from zope.component import getUtility
 from zope.lifecycleevent import modified
 from z3c.relationfield.relation import RelationValue
+from z3c.form.interfaces import NO_VALUE
 
 from Products.Five.browser import BrowserView
 from plone import api
@@ -123,7 +124,7 @@ class Merge(BrowserView):
                 continue
             if uid == canonical_uid:
                 continue
-            elif uid == 'empty':
+            elif uid == 'empty' and getattr(canonical, field_name, None) not in [NO_VALUE, None]:
                 delattr(canonical, field_name)
             else:
                 origin = contents.get(uid)
