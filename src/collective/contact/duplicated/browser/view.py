@@ -55,14 +55,18 @@ class Compare(BrowserView):
         first = self.contents[0]['obj']
         self.portal_type = first.portal_type
         self.fieldsets = get_fieldsets(self.portal_type)
-
         # check if this is contacts from different persons,
         # then we can also merge the persons
         self.merge_hp_persons = False
         if IHeldPosition.providedBy(first):
-            person_uids = [IUUID(hp['obj'].get_person())
-                for hp in self.contents if hp['uid'] != 'TEMP']
-            if len(set(person_uids)) > 1:
+            temp = False
+            person_uids = []
+            for hp in self.contents:
+                if hp['uid'] != 'TEMP':
+                    person_uids.append(IUUID(hp['obj'].get_person()))
+                else:
+                    temp = True
+            if len(set(person_uids)) > 1 or (temp and len(set(person_uids)) > 0):
                 self.merge_hp_persons = True
                 self.merge_person_url = "%s/merge-contacts?%s" % (
                     self.context.absolute_url(),
