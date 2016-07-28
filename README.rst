@@ -13,6 +13,8 @@ For the moment, this needs collective.contact.faceted with batch actions allowed
 Select two (or more) contacts (organization, held_position, person, etc) and click
 on "Merge duplicated" button.
 
+It is also possible to pass a data field with data that do not come from an existing contact. Such data may be merged with the final contact.
+
 Tests
 =====
 
@@ -28,4 +30,3 @@ Extend
 Adapters of field objects that implements IFieldRenderer interface
 renders the content of a field on the compare screen.
 Create a new adapter if you have specific fields.
-

@@ -5,7 +5,8 @@ Changelog
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Merge contacts with data
+  [simon-previdente]
 
 
 0.2 (2015-11-24)
@@ -24,4 +25,3 @@ Changelog
 
 - Initial release.
   [tdesvenain]
-

@@ -13,15 +13,20 @@
       tal:define="update view/update;
                   colnum python:len(view.contents)">
 
+    <input type="hidden" name="data"
+           tal:attributes="value python:request.get('data', None)" />
+
     <table class="listing nosort">
      <thead>
       <tr>
        <th></th>
        <th tal:repeat="content view/contents">
-		<a tal:attributes="href content/obj/absolute_url"
-		   tal:content="content/obj/get_full_title" target="_new"></a>
-		<input type="hidden" name="uids:list"
-		       tal:attributes="value content/uid" />
+    		<a tal:condition="python:content['uid']!='TEMP'"
+           tal:attributes="href content/obj/absolute_url"
+    		   tal:content="content/obj/get_full_title" target="_new"></a>
+        <span tal:condition="python:content['uid']=='TEMP'">Données supplémentaires</span>
+    		<input type="hidden" name="uids:list"
+    		       tal:attributes="value content/uid" />
        </th>
        <th></th>
       </tr>
@@ -30,12 +35,14 @@
         <td tal:repeat="item view/contents">
           <input type="radio"
                  name="path"
+                 tal:condition="python:item['uid']!='TEMP'"
                  tal:define="index repeat/item/index"
                  tal:attributes="checked python:index == 0 and '1' or None;
                                  id string:path-${item/uid};
                                  value item/uid;
                                  class index" />
-			<label tal:attributes="for string:path-${item/uid}"
+			<label tal:condition="python:item['uid']!='TEMP'"
+           tal:attributes="for string:path-${item/uid}"
 				   tal:content="item/path"></label>
         </td>
         <td></td>
@@ -105,7 +112,7 @@
    For your information : all contents that refer to merged elements will be updated
    with the one which has been selected as 'location'.
    </p>
-    <div tal:repeat="content view/contents">
+    <div tal:repeat="content python:[c for c in view.contents if c['uid']!='TEMP']">
       <label tal:content="content/obj/Title"></label>
       <ul>
         <li tal:repeat="backref content/back_references">
