@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='collective.contact.duplicated',
-    version='0.3.0',
+    version='0.3.1.dev0',
     description="Tools to manage duplicated contacts",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
