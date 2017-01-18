@@ -12,7 +12,7 @@ from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.supermodel.interfaces import FIELDSETS_KEY
 
-from collective.contact.duplicated import _
+from collective.contact.duplicated import _, logger
 
 
 EXCLUDED_FIELDS = ['parent_address']
@@ -88,7 +88,12 @@ def get_back_references(source_object):
         from_id = getattr(rel, '_from_id', None)
         if not from_id:
             from_id = rel.from_id
-        obj = intids.queryObject(from_id)
+        try:
+            obj = intids.queryObject(from_id)
+        except KeyError:
+
+            obj = None
+
         if obj:
             result.append({'obj': obj,
                            'attribute': rel.from_attribute})

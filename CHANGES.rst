@@ -5,7 +5,9 @@ Changelog
 0.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Prevent fatal error when a back reference relation to a duplicated contact
+  is out of sync with any actual content.
+  [thomasdesvenain]
 
 
 0.3.0 (2016-09-23)
