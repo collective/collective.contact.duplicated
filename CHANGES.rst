@@ -2,8 +2,14 @@ Changelog
 =========
 
 
-0.3 (unreleased)
-----------------
+0.3.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+0.3.0 (2016-09-23)
+------------------
 
 - Merge contacts with data
   [simon-previdente]
