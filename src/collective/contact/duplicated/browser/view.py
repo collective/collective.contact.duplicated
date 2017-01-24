@@ -3,7 +3,7 @@ from copy import copy
 import json
 
 from zope.intid.interfaces import IIntIds
-from zExceptions import NotFound
+from zExceptions import NotFound, BadRequest
 from zope.component import getUtility
 from zope.lifecycleevent import modified
 from z3c.relationfield.relation import RelationValue
@@ -24,6 +24,8 @@ class Compare(BrowserView):
 
     def get_contents(self):
         uids = self.request['uids']
+        if len(uids) < 2:
+            raise BadRequest("You must select at least two contents")
         contents = api.portal.get_tool('portal_catalog')(UID=uids)
         if len(contents) != len(uids):
             raise NotFound
@@ -75,14 +77,14 @@ class Compare(BrowserView):
     def diff(self, field):
         field_diff = IFieldDiff(field)
         values = [getattr(c['obj'], field.__name__, None)
-            for c in self.contents]
+                  for c in self.contents]
         #  check if at least two values differ
         for index, value in enumerate(values[:-1]):
             if field_diff.is_different(value, values[index + 1]):
                 differing = True
                 break
         else:
-            if len(values) > 0 and value:  # set and all the same
+            if value:  # set and all the same
                 differing = False
             else:  # not set
                 return None
@@ -183,11 +185,16 @@ class Merge(BrowserView):
             if uid == 'TEMP' and extra:
                 contents[uid] = extra
             else:
-                contents[uid] = api.content.get(UID=uid)
+                content = api.content.get(UID=uid)
+                if content is None:
+                    BadRequest("Content %s does not exist" % uid)
+                contents[uid] = content
 
         #  get canonical content
-        canonical_uid = values.pop('path')
+        canonical_uid = values.pop('path')  # path contains uid (TODO: rename this)
         canonical = api.content.get(UID=canonical_uid)
+        if canonical is None:
+            BadRequest("Content %s does not exist" % canonical_uid)
 
         # update fields
         self._transfer_field_values(values, contents, canonical)

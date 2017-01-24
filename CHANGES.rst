@@ -9,6 +9,9 @@ Changelog
   is out of sync with any actual content.
   [thomasdesvenain]
 
+- Prefer a 400 error than a 500 when user directly access to merge page without accurate params.
+  [thomasdesvenain]
+
 
 0.3.0 (2016-09-23)
 ------------------
