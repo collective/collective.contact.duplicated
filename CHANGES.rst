@@ -5,6 +5,9 @@ Changelog
 0.3.1 (unreleased)
 ------------------
 
+- Handle when field value is a ComputedAttribute (from an acqproperty)
+  [thomasdesvenain]
+
 - Prevent fatal error when a back reference relation to a duplicated contact
   is out of sync with any actual content.
   [thomasdesvenain]

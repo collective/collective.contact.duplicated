@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
-from App.Common import aq_base
+from ComputedAttribute import ComputedAttribute
+from Acquisition import aq_inner, aq_base
 from zope.schema.interfaces import IField, IDate, ICollection,\
     IVocabularyFactory, IBool
 from zope.component import adapts
@@ -58,6 +59,8 @@ class BaseFieldDiff(object):
             source_value = aq_base(source)[self.name]
         else:
             source_value = getattr(aq_base(source), self.name, None)
+            if isinstance(source_value, ComputedAttribute):
+                source_value = getattr(aq_inner(source), self.name, None)
         setattr(target, self.name, source_value)
 
 
