@@ -132,11 +132,10 @@ class TestDiff(IntegrationTestCase):
         portal = self.layer['portal']
         directory = portal.mydirectory
         gal_degaulle_uid = IUUID(directory.degaulle.adt)
-        portal.REQUEST.form['uids'] = [ gal_degaulle_uid ]
+        portal.REQUEST.form['uids'] = [ gal_degaulle_uid, 'TEMP' ]
         portal.REQUEST.form['data'] = '{"label": "De Gaulle label" }'
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts')
         view.update()
-        portal.REQUEST.form['uids'].append('TEMP')
         portal.REQUEST.form['path'] = gal_degaulle_uid
         portal.REQUEST.form['label'] = 'TEMP'
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts-apply')()

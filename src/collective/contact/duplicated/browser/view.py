@@ -22,10 +22,17 @@ from Products.statusmessages.interfaces import IStatusMessage
 
 class Compare(BrowserView):
 
+    contents = None
+    portal_type = None
+    fieldsets = None
+
     def get_contents(self):
-        uids = self.request['uids']
+        uids = copy(self.request['uids'])
         if len(uids) < 2:
             raise BadRequest("You must select at least two contents")
+        if 'TEMP' in uids:
+            uids.remove('TEMP')
+
         contents = api.portal.get_tool('portal_catalog')(UID=uids)
         if len(contents) != len(uids):
             raise NotFound
@@ -76,9 +83,14 @@ class Compare(BrowserView):
 
     def diff(self, field):
         field_diff = IFieldDiff(field)
+        if len(self.contents) < 2:
+            return None
+
         values = [getattr(c['obj'], field.__name__, None)
                   for c in self.contents]
+
         #  check if at least two values differ
+        value = None
         for index, value in enumerate(values[:-1]):
             if field_diff.is_different(value, values[index + 1]):
                 differing = True
