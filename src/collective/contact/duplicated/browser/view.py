@@ -175,8 +175,9 @@ class Merge(BrowserView):
         """Move subcontents and references of merged content and remove it
         """
         self._transfer_back_references(content, canonical)
-        cb = content.manage_cutObjects(content.keys())
-        canonical.manage_pasteObjects(cb)
+        if len(content.keys()) > 0:
+            cb = content.manage_cutObjects(content.keys())
+            canonical.manage_pasteObjects(cb)
         IStatusMessage(self.request).add("%s has been removed" %
                                          "/".join(content.getPhysicalPath()))
         api.content.delete(content)
