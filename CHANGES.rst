@@ -11,6 +11,9 @@ Changelog
 0.4 (2017-10-03)
 ----------------
 
+- Optimized back references update.
+  [thomasdesvenain]
+
 - Handle when field value is a ComputedAttribute (from an acqproperty)
   [thomasdesvenain]
 

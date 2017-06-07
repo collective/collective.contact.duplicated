@@ -155,17 +155,20 @@ class Merge(BrowserView):
         intids = getUtility(IIntIds)
         canonical_intid = intids.getId(canonical)
         back_references = get_back_references(content)
+        # for each back reference...
         for back_reference in back_references:
             from_obj = back_reference['obj']
             attribute = back_reference['attribute']
             value = getattr(from_obj, attribute)
+            # we remove relation to content and replace it with a relation to canonical
             if isinstance(value, (tuple, list)):
-                for index, v in enumerate(copy(value)):
-                    if v.to_object == content:
-                        value.remove(v)
+                for index, item in enumerate(copy(value)):
+                    if item.to_path == '/'.join(content.getPhysicalPath()):
+                        value.remove(item)
                         value.insert(index, RelationValue(canonical_intid))
+                        break
 
-                    setattr(from_obj, attribute, value)
+                setattr(from_obj, attribute, value)
             else:
                 setattr(from_obj, attribute, RelationValue(canonical_intid))
 
