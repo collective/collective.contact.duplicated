@@ -28,8 +28,10 @@ class Compare(BrowserView):
 
     def get_contents(self):
         uids = copy(self.request['uids'])
-        if len(uids) < 2:
-            raise BadRequest("You must select at least two contents")
+        if len(uids) == 0:
+            raise BadRequest("You must select contents to diff")
+        if len(uids) == 1 and 'data' not in self.request:
+            raise BadRequest("You must select at least two contents or one content with data")
         if 'TEMP' in uids:
             uids.remove('TEMP')
 
