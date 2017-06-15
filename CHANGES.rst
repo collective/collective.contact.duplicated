@@ -15,6 +15,9 @@ Changelog
 - Prefer a 400 error than a 500 when user directly access to merge page without accurate params.
   [thomasdesvenain]
 
+- Do not dismiss merge if only one UID + data
+  [ebrehault]
+
 
 0.3.0 (2016-09-23)
 ------------------
