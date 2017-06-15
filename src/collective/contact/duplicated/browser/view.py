@@ -28,7 +28,11 @@ class Compare(BrowserView):
 
     def get_contents(self):
         uids = copy(self.request['uids'])
-        if len(uids) < 2:
+        extra = self.request.get('data', None)
+        counts = len(uids)
+        if extra:
+            counts += 1
+        if counts < 2:
             raise BadRequest("You must select at least two contents")
         if 'TEMP' in uids:
             uids.remove('TEMP')
@@ -47,7 +51,6 @@ class Compare(BrowserView):
                  'back_references': get_back_references(obj),
                  'subcontents': obj.values()} for obj in content_objs]
         # add extra data as temporary object
-        extra = self.request.get('data', None)
         if extra:
             extra = json.loads(extra)
             data_obj = namedtuple('mystruct', extra.keys())(**extra)
