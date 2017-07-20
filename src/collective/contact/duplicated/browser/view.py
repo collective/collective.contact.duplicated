@@ -32,6 +32,7 @@ class Compare(BrowserView):
             raise BadRequest("You must select contents to diff")
         if len(uids) == 1 and 'data' not in self.request:
             raise BadRequest("You must select at least two contents or one content with data")
+
         if 'TEMP' in uids:
             uids.remove('TEMP')
 
@@ -49,7 +50,6 @@ class Compare(BrowserView):
                  'back_references': get_back_references(obj),
                  'subcontents': obj.values()} for obj in content_objs]
         # add extra data as temporary object
-        extra = self.request.get('data', None)
         if extra:
             extra = json.loads(extra)
             data_obj = namedtuple('mystruct', extra.keys())(**extra)
