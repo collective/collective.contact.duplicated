@@ -1,3 +1,4 @@
 - Thomas Desvenain, thomas.desvenain@gmail.com
 - Eric Brehault, ebrehault@gmail.com
 - Simon Prévidente, simon.previdente@makina-corpus.com
+- Stephan Geulette, stephan.geulette@imio.be

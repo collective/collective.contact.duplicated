@@ -136,7 +136,7 @@ class ChoiceFieldDiff(BaseFieldDiff):
             if vocabularyName:
                 vocabulary = getUtility(IVocabularyFactory, name=vocabularyName)(obj)
 
-        if vocabulary:
+        if vocabulary is not None:
             try:
                 term = vocabulary.getTermByToken(value)
             except LookupError:
