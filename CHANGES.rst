@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-0.4 (unreleased)
-------------------
+0.4 (2017-10-03)
+----------------
 
 - Handle when field value is a ComputedAttribute (from an acqproperty)
   [thomasdesvenain]
