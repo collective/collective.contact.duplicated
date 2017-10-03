@@ -2,17 +2,10 @@ Changelog
 =========
 
 
-0.3.1 (unreleased)
+0.4 (unreleased)
 ------------------
 
 - Handle when field value is a ComputedAttribute (from an acqproperty)
-  [thomasdesvenain]
-
-- Prevent fatal error when a back reference relation to a duplicated contact
-  is out of sync with any actual content.
-  [thomasdesvenain]
-
-- Prefer a 400 error than a 500 when user directly access to merge page without accurate params.
   [thomasdesvenain]
 
 - Do not dismiss merge if only one UID + data
@@ -23,6 +16,16 @@ Changelog
 
 - Do merge action with Manager role to avoid security problems
   [sgeulette]
+
+0.3.1 (2017-02-09)
+------------------
+
+- Prevent fatal error when a back reference relation to a duplicated contact
+  is out of sync with any actual content.
+  [thomasdesvenain]
+
+- Prefer a 400 error than a 500 when user directly access to merge page without accurate params.
+  [thomasdesvenain]
 
 0.3.0 (2016-09-23)
 ------------------
