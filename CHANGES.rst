@@ -21,6 +21,9 @@ Changelog
 - Avoid error with field using plone.app.vocabularies
   [sgeulette]
 
+- Do merge action with Manager role to avoid security problems
+  [sgeulette]
+
 0.3.0 (2016-09-23)
 ------------------
 
