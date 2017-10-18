@@ -9,7 +9,7 @@
 
 <div metal:fill-slot="main">
   <form id="form" class="" method="post"
-        action="merge-contacts-apply"
+      tal:attributes="action string:${context/absolute_url}/merge-contacts-apply"
       tal:define="update view/update;
                   colnum python:len(view.contents)">
 

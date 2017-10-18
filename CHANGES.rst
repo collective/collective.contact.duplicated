@@ -2,11 +2,29 @@ Changelog
 =========
 
 
-0.3.1 (unreleased)
-------------------
+0.5 (unreleased)
+----------------
+
+- Nothing changed yet.
+
+
+0.4 (2017-10-03)
+----------------
 
 - Handle when field value is a ComputedAttribute (from an acqproperty)
   [thomasdesvenain]
+
+- Do not dismiss merge if only one UID + data
+  [ebrehault]
+
+- Avoid error with field using plone.app.vocabularies
+  [sgeulette]
+
+- Do merge action with Manager role to avoid security problems
+  [sgeulette]
+
+0.3.1 (2017-02-09)
+------------------
 
 - Prevent fatal error when a back reference relation to a duplicated contact
   is out of sync with any actual content.
@@ -14,10 +32,6 @@ Changelog
 
 - Prefer a 400 error than a 500 when user directly access to merge page without accurate params.
   [thomasdesvenain]
-
-- Do not dismiss merge if only one UID + data
-  [ebrehault]
-
 
 0.3.0 (2016-09-23)
 ------------------
