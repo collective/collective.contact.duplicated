@@ -5,8 +5,8 @@ Changelog
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Hide 'merge persons' option when we merge object with non-object.
+  [thomasdesvenain]
 
 0.4 (2017-10-03)
 ----------------
