@@ -70,14 +70,12 @@ class Compare(BrowserView):
         # then we can also merge the persons
         self.merge_hp_persons = False
         if IHeldPosition.providedBy(first):
-            temp = False
             person_uids = []
             for hp in self.contents:
                 if hp['uid'] != 'TEMP':
                     person_uids.append(IUUID(hp['obj'].get_person()))
-                else:
-                    temp = True
-            if len(set(person_uids)) > 1 or (temp and len(set(person_uids)) > 0):
+
+            if len(set(person_uids)) > 1:
                 self.merge_hp_persons = True
                 self.merge_person_url = "%s/merge-contacts?%s" % (
                     self.context.absolute_url(),
