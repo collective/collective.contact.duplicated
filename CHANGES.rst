@@ -5,6 +5,9 @@ Changelog
 0.5 (unreleased)
 ----------------
 
+- Optimized back references update.
+  [thomasdesvenain]
+
 - Hide 'merge persons' option when we merge object with non-object.
   [thomasdesvenain]
 
