@@ -213,31 +213,30 @@ class Merge(BrowserView):
         if canonical is None:
             BadRequest("Content %s does not exist" % canonical_uid)
 
-        with api.env.adopt_roles(['Manager']):
-            # update fields
-            self._transfer_field_values(values, contents, canonical)
+        # update fields
+        self._transfer_field_values(values, contents, canonical)
 
-            for (uid, content) in contents.items():
-                if content == canonical or uid == 'TEMP':
+        for (uid, content) in contents.items():
+            if content == canonical or uid == 'TEMP':
+                continue
+            self._remove_content_object(content, canonical)
+
+        modified(canonical)
+
+        # if we merge contacts, merge persons
+        next_uids = []
+        if merge_hp_persons:
+            for content in contents.values():
+                if type(content) is dict: # data field
                     continue
-                self._remove_content_object(content, canonical)
+                next_uids.append(IUUID(content.get_person()))
+        elif subcontent_uids:
+            next_uids = subcontent_uids
 
-            modified(canonical)
-
-            # if we merge contacts, merge persons
-            next_uids = []
-            if merge_hp_persons:
-                for content in contents.values():
-                    if type(content) is dict:  # data field
-                        continue
-                    next_uids.append(IUUID(content.get_person()))
-            elif subcontent_uids:
-                next_uids = subcontent_uids
-
-            if next_uids:
-                request.response.redirect("%s/merge-contacts?%s" % (
-                                          self.context.absolute_url(),
-                                          '&'.join(['uids:list=%s' % next_uid
-                                          for next_uid in next_uids])))
-            else:
-                request.response.redirect(canonical.absolute_url())
+        if next_uids:
+            request.response.redirect("%s/merge-contacts?%s" % (
+                    self.context.absolute_url(),
+                    '&'.join(['uids:list=%s' % next_uid
+                              for next_uid in next_uids])))
+        else:
+            request.response.redirect(canonical.absolute_url())

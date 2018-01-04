@@ -11,6 +11,10 @@ Changelog
 - Hide 'merge persons' option when we merge object with non-object.
   [thomasdesvenain]
 
+- Revert: do merge action with Manager role.
+  It allowed to make actions without accurate permissions.
+  [tdesvenain]
+
 0.4 (2017-10-03)
 ----------------
 
