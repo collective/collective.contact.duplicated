@@ -11,9 +11,6 @@ Changelog
 0.4 (2017-10-03)
 ----------------
 
-- Hide 'merge persons' option when we merge object with non-object.
-  [thomasdesvenain]
-
 - Handle when field value is a ComputedAttribute (from an acqproperty)
   [thomasdesvenain]
 
