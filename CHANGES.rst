@@ -5,7 +5,8 @@ Changelog
 0.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Plone 5 compatible.
+  [thomasdesvenain]
 
 
 0.5 (2018-01-04)

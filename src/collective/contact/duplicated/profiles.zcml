@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.contact.duplicated">
+
+  <genericsetup:registerProfile
+      name="default"
+      title="collective.contact.duplicated"
+      directory="profiles/default"
+      description="Installs the collective.contact.duplicated add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+  />
+
+  <genericsetup:importStep
+      name="collective.contact.duplicated-postInstall"
+      title="collective.contact.duplicated post_install import step"
+      description="Post install import step from collective.contact.duplicated"
+      handler=".setuphandlers.post_install">
+  </genericsetup:importStep>
+
+  <genericsetup:upgradeStep
+      title="Upgrade from 1 to 2"
+      description="Refresh resources"
+      source="1"
+      destination="2"
+      handler=".setuphandlers.refresh_resources"
+      profile="collective.contact.duplicated:default" />
+
+</configure>

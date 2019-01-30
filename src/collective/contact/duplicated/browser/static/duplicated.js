@@ -1,7 +1,10 @@
-contactduplicated = {};
-contactduplicated.merge_contacts = function(){
+var contactduplicated = {};
+contactduplicated.merge_contacts = function () {
     var uids = contactfacetednav.contacts.selection_uids();
-    var base_url = $('base').attr('href');
+    var baseURL = $('body').data('baseUrl') // plone 5
+    if (!baseURL) {
+        baseURL = $('base').attr('href'); // plone 4
+    }
     var params = contactfacetednav.serialize_uids(uids)
-    window.location.href = base_url + '/merge-contacts?' + params;
+    window.location.href = baseURL + '/merge-contacts?' + params;
 };

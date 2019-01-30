@@ -76,7 +76,8 @@
 	       <tal:empty condition="not:field/required">
 			<label tal:attributes="name field/__name__;
 			                       for string:${field/__name__}-empty;">
-			    <img src="delete_icon.png" title="Set empty"
+			    <img tal:attributes="src string:$portal_url/++resource++collective.contact.core/delete_icon.png"
+               title="Set empty"
 			         i18n:attributes="title" />
 			</label>
 	        <input tal:attributes="type python:len([i for i in diff if i['selectable']]) == 0 and 'checkbox' or 'radio';
