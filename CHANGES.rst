@@ -5,8 +5,10 @@ Changelog
 0.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Made buildout and tests running.
+  [sgeulette]
+- Protect compare view against xss
+  [sgeulette]
 
 0.5 (2018-01-04)
 ----------------

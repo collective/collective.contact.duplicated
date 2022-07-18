@@ -22,8 +22,8 @@
        <th></th>
        <th tal:repeat="content view/contents">
     		<a tal:condition="python:content['uid']!='TEMP'"
-           tal:attributes="href content/obj/absolute_url"
-    		   tal:content="content/obj/get_full_title" target="_new"></a>
+               tal:attributes="href content/obj/absolute_url"
+               tal:content="python:view.escape(content['obj'].get_full_title())" target="_new"></a>
         <span tal:condition="python:content['uid']=='TEMP'">Données supplémentaires</span>
     		<input type="hidden" name="uids:list"
     		       tal:attributes="value content/uid" />
@@ -70,7 +70,7 @@
 			                       checked item/selected" />
 			<label tal:attributes="for string:${field/__name__}-${item/uid};
 			       				   class python: (item['differing']) and 'differing' or 'similar'"
-				   tal:content="structure item/render"></label>
+				   tal:content="structure item/render" />
 	      </td>
 	      <td class="cell-delete">
 	       <tal:empty condition="not:field/required">

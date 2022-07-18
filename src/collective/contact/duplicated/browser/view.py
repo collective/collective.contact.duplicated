@@ -27,6 +27,9 @@ class Compare(BrowserView):
     portal_type = None
     fieldsets = None
 
+    def escape(self, content):
+        return html.escape(content)
+
     def get_contents(self):
         uids = copy(self.request['uids'])
         extra = self.request.get('data', None)
@@ -108,6 +111,8 @@ class Compare(BrowserView):
         for index, content in enumerate(self.contents):
             value = values[index]
             render = field_diff.render(content['obj'])
+            if render and field.__name__ not in ('activity', 'position'):  # do not break real html
+                render = self.escape(render)
             if render is None or render == '':
                 selectable = False
                 selected = False

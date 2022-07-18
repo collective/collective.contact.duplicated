@@ -113,9 +113,11 @@ class TestDiff(IntegrationTestCase):
         self.assertEqual(position_diff[0]['render'],
                          u"""<a href="http://nohost/plone/mydirectory/armeedeterre" """
                          u"""target="new">Armée de terre</a>""")
-        self.assertEqual(position_diff[1]['render'],
-            u"""<a href="http://nohost/plone/mydirectory/armeedeterre/corpsa/divisionalpha/regimenth/brigadelh/sergent_lh" """
-            u"""target="new">Sergent de la brigade LH, Brigade LH (Armée de terre)</a>""")
+        self.assertEqual(
+            position_diff[1]['render'],
+            u'<a href="http://nohost/plone/mydirectory/armeedeterre/corpsa/divisionalpha/regimenth/brigadelh/'
+            u'sergent_lh" target="new">Sergent de la brigade LH (Armée de terre / Corps A / Division Alpha / Régiment '
+            U'H / Brigade LH)</a>')
 
         self.assertIn('09',
                       view.diff(view.fieldsets[0]['fields'][3])[0]['render'])
