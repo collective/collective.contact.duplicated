@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """Setup/installation tests for this package."""
 
-from zope.component import getUtility
-from zope.intid.interfaces import IIntIds
+from collective.contact.duplicated.api import get_back_references
 from collective.contact.duplicated.testing import IntegrationTestCase
 from plone import api
 from plone.app.testing.helpers import login
 from plone.app.testing.interfaces import TEST_USER_NAME
 from plone.uuid.interfaces import IUUID
 from z3c.relationfield.relation import RelationValue
-from collective.contact.duplicated.api import get_back_references
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
 
 
 class TestDiff(IntegrationTestCase):
@@ -132,12 +132,11 @@ class TestDiff(IntegrationTestCase):
         portal = self.layer['portal']
         directory = portal.mydirectory
         gal_degaulle_uid = IUUID(directory.degaulle.adt)
-        portal.REQUEST.form['uids'] = [ gal_degaulle_uid, 'TEMP' ]
+        portal.REQUEST.form['uids'] = [gal_degaulle_uid, 'TEMP']
         portal.REQUEST.form['data'] = '{"label": "De Gaulle label" }'
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts')
         view.update()
         portal.REQUEST.form['path'] = gal_degaulle_uid
         portal.REQUEST.form['label'] = 'TEMP'
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts-apply')()
-        self.assertEquals(directory.degaulle.adt.label,
-                            'De Gaulle label')
+        self.assertEquals(directory.degaulle.adt.label, 'De Gaulle label')

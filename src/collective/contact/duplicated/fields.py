@@ -1,27 +1,29 @@
 # -*- encoding: utf-8 -*-
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from collective.contact.duplicated import _
+from collective.contact.duplicated.interfaces import IFieldDiff
+from collective.contact.widget.interfaces import IContactChoice
 from ComputedAttribute import ComputedAttribute
-from Acquisition import aq_inner, aq_base
-from zope.schema.interfaces import IField, IDate, ICollection,\
-    IVocabularyFactory, IBool
+from plone.app.textfield.interfaces import IRichText
+from plone.dexterity.utils import datify
+from plone.namedfile.interfaces import INamedField
+from plone.namedfile.interfaces import INamedImageField
+from plone.schemaeditor.schema import IChoice
+from plone.uuid.interfaces import IUUID
+from Products.CMFCore.utils import getToolByName
+from z3c.form.interfaces import NO_VALUE
+from z3c.relationfield.interfaces import IRelation
 from zope.component import adapts
 from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface.declarations import implements
 from zope.schema import getFieldsInOrder
-
-from z3c.form.interfaces import NO_VALUE
-from z3c.relationfield.interfaces import IRelation
-
-from Products.CMFCore.utils import getToolByName
-from plone.app.textfield.interfaces import IRichText
-from plone.namedfile.interfaces import INamedField, INamedImageField
-from plone.schemaeditor.schema import IChoice
-from plone.dexterity.utils import datify
-from plone.uuid.interfaces import IUUID
-
-from collective.contact.widget.interfaces import IContactChoice
-from collective.contact.duplicated.interfaces import IFieldDiff
-from collective.contact.duplicated import _
+from zope.schema.interfaces import IBool
+from zope.schema.interfaces import ICollection
+from zope.schema.interfaces import IDate
+from zope.schema.interfaces import IField
+from zope.schema.interfaces import IVocabularyFactory
 
 
 class BaseFieldDiff(object):
@@ -51,11 +53,11 @@ class BaseFieldDiff(object):
         return str(value or "")
 
     def is_different(self, value1, value2):
-        return value1 != value2  # @TODO: get a diff
+        return value1 != value2  # TODO: get a diff
 
     def copy(self, source, target):
         source_value = None
-        if type(aq_base(source)) is dict: # data field
+        if type(aq_base(source)) is dict:  # data field
             source_value = aq_base(source)[self.name]
         else:
             source_value = getattr(aq_base(source), self.name, None)

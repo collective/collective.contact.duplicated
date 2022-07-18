@@ -1,21 +1,18 @@
-from collections import OrderedDict
-
 from Acquisition import aq_inner
-from zope.intid.interfaces import IIntIds
-from zope.component import getUtility
-from zope.schema import getFieldsInOrder
-
-from zc.relation.interfaces import ICatalog
-
+from collections import OrderedDict
+from collective.contact.duplicated import _
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.supermodel.interfaces import FIELDSETS_KEY
-
-from collective.contact.duplicated import _, logger
+from zc.relation.interfaces import ICatalog
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
+from zope.schema import getFieldsInOrder
 
 
 EXCLUDED_FIELDS = ['parent_address']
+
 
 def _get_schema_fields(schema, names):
     return [schema[f] for f in names

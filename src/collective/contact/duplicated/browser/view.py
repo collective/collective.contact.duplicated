@@ -1,23 +1,24 @@
 from collections import namedtuple
+from collective.contact.core.content.held_position import IHeldPosition
+from collective.contact.duplicated.api import get_back_references
+from collective.contact.duplicated.api import get_fields
+from collective.contact.duplicated.api import get_fieldsets
+from collective.contact.duplicated.interfaces import IFieldDiff
 from copy import copy
-import json
-
-from zope.intid.interfaces import IIntIds
-from zExceptions import NotFound, BadRequest
-from zope.component import getUtility
-from zope.lifecycleevent import modified
-from z3c.relationfield.relation import RelationValue
-from z3c.form.interfaces import NO_VALUE
-
-from Products.Five.browser import BrowserView
 from plone import api
 from plone.uuid.interfaces import IUUID
-
-from collective.contact.core.content.held_position import IHeldPosition
-from collective.contact.duplicated.interfaces import IFieldDiff
-from collective.contact.duplicated.api import get_back_references,\
-    get_fieldsets, get_fields
+from Products.Five.browser import BrowserView
 from Products.statusmessages.interfaces import IStatusMessage
+from z3c.form.interfaces import NO_VALUE
+from z3c.relationfield.relation import RelationValue
+from zExceptions import BadRequest
+from zExceptions import NotFound
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
+from zope.lifecycleevent import modified
+
+import html
+import json
 
 
 class Compare(BrowserView):
@@ -227,7 +228,7 @@ class Merge(BrowserView):
         next_uids = []
         if merge_hp_persons:
             for content in contents.values():
-                if type(content) is dict: # data field
+                if type(content) is dict:  # data field
                     continue
                 next_uids.append(IUUID(content.get_person()))
         elif subcontent_uids:

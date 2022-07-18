@@ -42,6 +42,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'collective.contact.core',
+        'collective.contact.facetednav',
+        'future',
         'plone.api',
         'setuptools',
     ],
@@ -50,6 +52,7 @@ setup(
             'ecreall.helpers.testing',
             'collective.contact.facetednav',
             'plone.app.testing',
+            'plone.app.robotframework',
         ],
     },
     entry_points="""
