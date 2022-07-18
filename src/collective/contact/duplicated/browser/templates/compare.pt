@@ -19,16 +19,16 @@
     <table class="listing nosort">
      <thead>
       <tr>
-       <th></th>
+       <th />
        <th tal:repeat="content view/contents">
     		<a tal:condition="python:content['uid']!='TEMP'"
                tal:attributes="href content/obj/absolute_url"
-               tal:content="python:view.escape(content['obj'].get_full_title())" target="_new"></a>
+               tal:content="python:view.escape(content['obj'].get_full_title())" target="_new" />
         <span tal:condition="python:content['uid']=='TEMP'">Données supplémentaires</span>
     		<input type="hidden" name="uids:list"
     		       tal:attributes="value content/uid" />
        </th>
-       <th></th>
+       <th />
       </tr>
       <tr>
         <td i18n:translate="">Location</td>
@@ -43,17 +43,17 @@
                                  class index" />
 			<label tal:condition="python:item['uid']!='TEMP'"
            tal:attributes="for string:path-${item/uid}"
-				   tal:content="item/path"></label>
+				   tal:content="item/path" />
         </td>
-        <td></td>
+        <td />
       </tr>
      </thead>
 
 	<tal:fieldsets tal:repeat="fieldset view/fieldsets">
 	    <tr>
 		  <th i18n:translate="" tal:content="fieldset/title"
-		      tal:attributes="colspan python:colnum + 1"></th>
-		  <th></th>
+		      tal:attributes="colspan python:colnum + 1" />
+		  <th />
 	    </tr>
 	   <tal:fields repeat="field fieldset/fields">
 	    <tr tal:define="diff python:view.diff(field)"
@@ -113,12 +113,12 @@
    with the one which has been selected as 'location'.
    </p>
     <div tal:repeat="content python:[c for c in view.contents if c['uid']!='TEMP']">
-      <label tal:content="content/obj/Title"></label>
+      <label tal:content="content/obj/Title" />
       <ul>
         <li tal:repeat="backref content/back_references">
           <a target="new" tal:attributes="href backref/obj/absolute_url"
-             tal:content="backref/obj/Title"></a>
-          (<span tal:content="string: ${backref/obj/portal_type} - ${backref/attribute}"></span>)
+             tal:content="backref/obj/Title" />
+          (<span tal:content="string: ${backref/obj/portal_type} - ${backref/attribute}" />)
         </li>
       </ul>
   </div>
@@ -134,14 +134,14 @@
    </p>
     <tal:content tal:repeat="content view/contents">
      <div tal:condition="content/subcontents">
-      <label tal:content="content/obj/Title"></label>
+      <label tal:content="content/obj/Title" />
       <ul>
         <li tal:repeat="subcontent content/subcontents">
           <input type="checkbox" name="subcontent_uids:list"
                  tal:condition="maybe_duplicated"
                  tal:attributes="value subcontent/UID" />
           <a target="new" tal:attributes="href subcontent/absolute_url"
-             tal:content="subcontent/Title"></a>
+             tal:content="subcontent/Title" />
         </li>
       </ul>
      </div>
