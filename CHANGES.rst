@@ -9,6 +9,8 @@ Changelog
   [sgeulette]
 - Protect compare view against xss
   [sgeulette]
+- Avoided error in RelationList field when duplicated and canonical are set on the same field. We do not set a second
+  RelationValue pointing to canonical. (ValueError: term values must be unique !)
 
 0.5 (2018-01-04)
 ----------------

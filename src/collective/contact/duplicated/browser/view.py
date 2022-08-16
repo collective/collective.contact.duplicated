@@ -172,7 +172,10 @@ class Merge(BrowserView):
                 for index, item in enumerate(copy(value)):
                     if item.to_path == '/'.join(content.getPhysicalPath()):
                         value.remove(item)
-                        value.insert(index, RelationValue(canonical_intid))
+                        # We check if a relation to canon intid not already exists to avoid the following error
+                        # ValueError: term values must be unique
+                        if not [rel.to_path for rel in value if rel.to_id == canonical_intid]:
+                            value.insert(index, RelationValue(canonical_intid))
                         break
 
                 setattr(from_obj, attribute, value)
