@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.6 (unreleased)
+0.6 (2022-08-19)
 ----------------
 
 - Made buildout and tests running.
