@@ -26,9 +26,9 @@ setup(
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
+        "Framework :: Plone :: 6.1",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.13",
     ],
     keywords='contacts',
     author='Thomas Desvenain',

@@ -63,7 +63,7 @@ def get_fieldsets(portal_type):
                    'fields': []})['fields'].extend(
                                  _get_schema_fields(behavior, fieldset.fields))
 
-    return fieldsets_dict.values()
+    return list(fieldsets_dict.values())
 
 
 def get_fields(portal_type):

@@ -141,4 +141,4 @@ class TestDiff(IntegrationTestCase):
         portal.REQUEST.form['path'] = gal_degaulle_uid
         portal.REQUEST.form['label'] = 'TEMP'
         view = portal.mydirectory.unrestrictedTraverse('merge-contacts-apply')()
-        self.assertEquals(directory.degaulle.adt.label, 'De Gaulle label')
+        self.assertEqual(directory.degaulle.adt.label, 'De Gaulle label')

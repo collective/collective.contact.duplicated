@@ -17,7 +17,7 @@ from z3c.relationfield.interfaces import IRelation
 from zope.component import adapts
 from zope.component import getUtility
 from zope.i18n import translate
-from zope.interface.declarations import implements
+from zope.interface.declarations import implementer
 from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IBool
 from zope.schema.interfaces import ICollection
@@ -26,8 +26,8 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IVocabularyFactory
 
 
+@implementer(IFieldDiff)
 class BaseFieldDiff(object):
-    implements(IFieldDiff)
 
     def __init__(self, field):
         self.field = field

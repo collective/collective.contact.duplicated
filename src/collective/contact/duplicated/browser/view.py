@@ -53,11 +53,11 @@ class Compare(BrowserView):
                  'uid': IUUID(obj),
                  'path': '/'.join(obj.getPhysicalPath()),
                  'back_references': get_back_references(obj),
-                 'subcontents': obj.values()} for obj in content_objs]
+                 'subcontents': list(obj.values())} for obj in content_objs]
         # add extra data as temporary object
         if extra:
             extra = json.loads(extra)
-            data_obj = namedtuple('mystruct', extra.keys())(**extra)
+            data_obj = namedtuple('mystruct', list(extra.keys()))(**extra)
             data.append({
                 'obj': data_obj,
                 'uid': 'TEMP',
@@ -144,7 +144,7 @@ class Merge(BrowserView):
         fields = dict([(field.__name__, field)
                        for field in get_fields(canonical.portal_type)])
         canonical_uid = IUUID(canonical)
-        for field_name, uid in values.items():
+        for field_name, uid in list(values.items()):
             if field_name in ['_authenticator', 'data', 'ajax_load']:
                 continue
             if uid == canonical_uid:
@@ -188,8 +188,8 @@ class Merge(BrowserView):
         """Move subcontents and references of merged content and remove it
         """
         self._transfer_back_references(content, canonical)
-        if len(content.keys()) > 0:
-            cb = content.manage_cutObjects(content.keys())
+        if len(list(content.keys())) > 0:
+            cb = content.manage_cutObjects(list(content.keys()))
             canonical.manage_pasteObjects(cb)
         IStatusMessage(self.request).add("%s has been removed" %
                                          "/".join(content.getPhysicalPath()))
@@ -225,7 +225,7 @@ class Merge(BrowserView):
         # update fields
         self._transfer_field_values(values, contents, canonical)
 
-        for (uid, content) in contents.items():
+        for (uid, content) in list(contents.items()):
             if content == canonical or uid == 'TEMP':
                 continue
             self._remove_content_object(content, canonical)
@@ -235,7 +235,7 @@ class Merge(BrowserView):
         # if we merge contacts, merge persons
         next_uids = []
         if merge_hp_persons:
-            for content in contents.values():
+            for content in list(contents.values()):
                 if type(content) is dict:  # data field
                     continue
                 next_uids.append(IUUID(content.get_person()))

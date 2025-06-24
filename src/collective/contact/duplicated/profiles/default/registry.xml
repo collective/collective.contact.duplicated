@@ -1,0 +1,13 @@
+<registry>
+
+  <records prefix="plone.bundles/collective-contact-duplicated"
+           interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+    <value key="enabled">True</value>
+    <value key="csscompilation">++resource++collective.contact.duplicated/duplicated.css</value>
+    <value key="jscompilation">++resource++collective.contact.duplicated/duplicated.js</value>
+    <value key="depends">plone</value>
+    <value key="load_async">False</value>
+    <value key="load_defer">False</value>
+  </records>
+
+</registry>
