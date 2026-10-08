@@ -25,3 +25,4 @@ htmlcov/
 output.xml
 pyvenv.cfg
 *.swp
+CACHEDIR.TAG
