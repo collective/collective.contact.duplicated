@@ -12,10 +12,9 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.testing import z2
 
-import unittest
-
 import collective.contact.core
 import collective.contact.duplicated
+import unittest
 
 
 class CollectiveContactDuplicatedLayer(PloneSandboxLayer):

@@ -129,7 +129,7 @@ class ChoiceFieldDiff(BaseFieldDiff):
         if not value:
             return value
 
-        if obj.__class__.__name__ is 'mystruct':
+        if obj.__class__.__name__ == 'mystruct':
             return value
 
         vocabulary = self.field.vocabulary
@@ -250,7 +250,7 @@ try:
             value = self.get_value(obj)
             return self.render_collection_entry(obj, value)
 
-except:
+except ImportError:
     HAS_DATAGRIDFIELD = False
 
 
