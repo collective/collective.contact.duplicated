@@ -31,17 +31,17 @@ class Compare(BrowserView):
         return html.escape(content)
 
     def get_contents(self):
-        uids = copy(self.request['uids'])
-        extra = self.request.get('data', None)
+        uids = copy(self.request["uids"])
+        extra = self.request.get("data", None)
         counts = len(uids)
         if extra:
             counts += 1
         if counts < 2:
             raise BadRequest("You must select at least two contents")
-        if 'TEMP' in uids:
-            uids.remove('TEMP')
+        if "TEMP" in uids:
+            uids.remove("TEMP")
 
-        contents = api.portal.get_tool('portal_catalog')(UID=uids)
+        contents = api.portal.get_tool("portal_catalog")(UID=uids)
         if len(contents) != len(uids):
             raise NotFound
 
@@ -49,26 +49,33 @@ class Compare(BrowserView):
         assert len(set([b.portal_type for b in contents])) == 1
         content_objs = [c.getObject() for c in contents]
 
-        data = [{'obj': obj,
-                 'uid': IUUID(obj),
-                 'path': '/'.join(obj.getPhysicalPath()),
-                 'back_references': get_back_references(obj),
-                 'subcontents': list(obj.values())} for obj in content_objs]
+        data = [
+            {
+                "obj": obj,
+                "uid": IUUID(obj),
+                "path": "/".join(obj.getPhysicalPath()),
+                "back_references": get_back_references(obj),
+                "subcontents": list(obj.values()),
+            }
+            for obj in content_objs
+        ]
         # add extra data as temporary object
         if extra:
             extra = json.loads(extra)
-            data_obj = namedtuple('mystruct', list(extra.keys()))(**extra)
-            data.append({
-                'obj': data_obj,
-                'uid': 'TEMP',
-                'back_references': [],
-                'subcontents': [],
-            })
+            data_obj = namedtuple("mystruct", list(extra.keys()))(**extra)
+            data.append(
+                {
+                    "obj": data_obj,
+                    "uid": "TEMP",
+                    "back_references": [],
+                    "subcontents": [],
+                }
+            )
         return data
 
     def update(self):
         self.contents = self.get_contents()
-        first = self.contents[0]['obj']
+        first = self.contents[0]["obj"]
         self.portal_type = first.portal_type
         self.fieldsets = get_fieldsets(self.portal_type)
         # check if this is contacts from different persons,
@@ -77,22 +84,22 @@ class Compare(BrowserView):
         if IHeldPosition.providedBy(first):
             person_uids = []
             for hp in self.contents:
-                if hp['uid'] != 'TEMP':
-                    person_uids.append(IUUID(hp['obj'].get_person()))
+                if hp["uid"] != "TEMP":
+                    person_uids.append(IUUID(hp["obj"].get_person()))
 
             if len(set(person_uids)) > 1:
                 self.merge_hp_persons = True
                 self.merge_person_url = "%s/merge-contacts?%s" % (
                     self.context.absolute_url(),
-                    '&'.join(['uids:list=%s' % uid for uid in person_uids]))
+                    "&".join(["uids:list=%s" % uid for uid in person_uids]),
+                )
 
     def diff(self, field):
         field_diff = IFieldDiff(field)
         if len(self.contents) < 2:
             return None
 
-        values = [getattr(c['obj'], field.__name__, None)
-                  for c in self.contents]
+        values = [getattr(c["obj"], field.__name__, None) for c in self.contents]
 
         #  check if at least two values differ
         value = None
@@ -110,10 +117,13 @@ class Compare(BrowserView):
         one_selected = False  # we select by default the first value that is set
         for index, content in enumerate(self.contents):
             value = values[index]
-            render = field_diff.render(content['obj'])
-            if render and field.__name__ not in ('activity', 'position'):  # do not break real html
+            render = field_diff.render(content["obj"])
+            if render and field.__name__ not in (
+                "activity",
+                "position",
+            ):  # do not break real html
                 render = self.escape(render)
-            if render is None or render == '':
+            if render is None or render == "":
                 selectable = False
                 selected = False
             elif not differing:
@@ -127,12 +137,14 @@ class Compare(BrowserView):
                 selectable = True
                 selected = False
 
-            info = {'uid': content['uid'],
-                    'value': value,
-                    'selected': selected,
-                    'differing': differing,
-                    'selectable': selectable,
-                    'render': render}
+            info = {
+                "uid": content["uid"],
+                "value": value,
+                "selected": selected,
+                "differing": differing,
+                "selectable": selectable,
+                "render": render,
+            }
             diff.append(info)
 
         return diff
@@ -141,15 +153,17 @@ class Compare(BrowserView):
 class Merge(BrowserView):
 
     def _transfer_field_values(self, values, contents, canonical):
-        fields = dict([(field.__name__, field)
-                       for field in get_fields(canonical.portal_type)])
+        fields = dict([(field.__name__, field) for field in get_fields(canonical.portal_type)])
         canonical_uid = IUUID(canonical)
         for field_name, uid in list(values.items()):
-            if field_name in ['_authenticator', 'data', 'ajax_load']:
+            if field_name in ["_authenticator", "data", "ajax_load"]:
                 continue
             if uid == canonical_uid:
                 continue
-            elif uid == 'empty' and getattr(canonical, field_name, None) not in [NO_VALUE, None]:
+            elif uid == "empty" and getattr(canonical, field_name, None) not in [
+                NO_VALUE,
+                None,
+            ]:
                 delattr(canonical, field_name)
             else:
                 origin = contents.get(uid)
@@ -157,20 +171,19 @@ class Merge(BrowserView):
                 IFieldDiff(field).copy(origin, canonical)
 
     def _transfer_back_references(self, content, canonical):
-        """Update back references of removed objects
-        """
+        """Update back references of removed objects"""
         intids = getUtility(IIntIds)
         canonical_intid = intids.getId(canonical)
         back_references = get_back_references(content)
         # for each back reference...
         for back_reference in back_references:
-            from_obj = back_reference['obj']
-            attribute = back_reference['attribute']
+            from_obj = back_reference["obj"]
+            attribute = back_reference["attribute"]
             value = getattr(from_obj, attribute)
             # we remove relation to content and replace it with a relation to canonical
             if isinstance(value, (tuple, list)):
                 for index, item in enumerate(copy(value)):
-                    if item.to_path == '/'.join(content.getPhysicalPath()):
+                    if item.to_path == "/".join(content.getPhysicalPath()):
                         value.remove(item)
                         # We check if a relation to canon intid not already exists to avoid the following error
                         # ValueError: term values must be unique
@@ -185,30 +198,28 @@ class Merge(BrowserView):
             modified(from_obj)
 
     def _remove_content_object(self, content, canonical):
-        """Move subcontents and references of merged content and remove it
-        """
+        """Move subcontents and references of merged content and remove it"""
         self._transfer_back_references(content, canonical)
         if len(list(content.keys())) > 0:
             cb = content.manage_cutObjects(list(content.keys()))
             canonical.manage_pasteObjects(cb)
-        IStatusMessage(self.request).add("%s has been removed" %
-                                         "/".join(content.getPhysicalPath()))
+        IStatusMessage(self.request).add("%s has been removed" % "/".join(content.getPhysicalPath()))
         api.content.delete(content)
 
     def __call__(self):
         request = self.request
         values = copy(request.form)
-        merge_hp_persons = values.pop('merge-hp-persons', False)
-        subcontent_uids = values.pop('subcontent_uids', False)
+        merge_hp_persons = values.pop("merge-hp-persons", False)
+        subcontent_uids = values.pop("subcontent_uids", False)
 
-        extra = values.get('data', None)
+        extra = values.get("data", None)
         if extra:
             extra = json.loads(extra)
-            del values['data']
+            del values["data"]
 
         contents = {}
-        for uid in values.pop('uids'):
-            if uid == 'TEMP' and extra:
+        for uid in values.pop("uids"):
+            if uid == "TEMP" and extra:
                 contents[uid] = extra
             else:
                 content = api.content.get(UID=uid)
@@ -217,7 +228,7 @@ class Merge(BrowserView):
                 contents[uid] = content
 
         #  get canonical content
-        canonical_uid = values.pop('path')  # path contains uid (TODO: rename this)
+        canonical_uid = values.pop("path")  # path contains uid (TODO: rename this)
         canonical = api.content.get(UID=canonical_uid)
         if canonical is None:
             BadRequest("Content %s does not exist" % canonical_uid)
@@ -225,8 +236,8 @@ class Merge(BrowserView):
         # update fields
         self._transfer_field_values(values, contents, canonical)
 
-        for (uid, content) in list(contents.items()):
-            if content == canonical or uid == 'TEMP':
+        for uid, content in list(contents.items()):
+            if content == canonical or uid == "TEMP":
                 continue
             self._remove_content_object(content, canonical)
 
@@ -243,9 +254,12 @@ class Merge(BrowserView):
             next_uids = subcontent_uids
 
         if next_uids:
-            request.response.redirect("%s/merge-contacts?%s" % (
+            request.response.redirect(
+                "%s/merge-contacts?%s"
+                % (
                     self.context.absolute_url(),
-                    '&'.join(['uids:list=%s' % next_uid
-                              for next_uid in next_uids])))
+                    "&".join(["uids:list=%s" % next_uid for next_uid in next_uids]),
+                )
+            )
         else:
             request.response.redirect(canonical.absolute_url())

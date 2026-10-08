@@ -10,8 +10,7 @@ class ICollectiveContactDuplicatedLayer(IDefaultBrowserLayer):
 
 
 class IFieldDiff(Interface):
-    """Adapts a zope.schema field to provide diff helpers
-    """
+    """Adapts a zope.schema field to provide diff helpers"""
 
     def is_different(self, value1, value2):
         """Returns True or any information if value1 and value2 differ
@@ -19,9 +18,7 @@ class IFieldDiff(Interface):
         """
 
     def render(self, content):
-        """Render field value on compare screen
-        """
+        """Render field value on compare screen"""
 
     def copy(self, source, target):
-        """Transfer the field value from source object to target object
-        """
+        """Transfer the field value from source object to target object"""
