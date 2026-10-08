@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Base module for unittesting."""
 
+from collective.contact.facetednav.interfaces import IActionsEnabled
+from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -10,11 +12,21 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
-from plone.testing import z2
+from plone.testing.zope import installProduct
+from plone.testing.zope import uninstallProduct
+from plone.testing.zope import WSGI_SERVER_FIXTURE as SERVER_FIXTURE
+from zope.interface import alsoProvides
 
 import collective.contact.core
 import collective.contact.duplicated
+import collective.contact.facetednav
+import collective.js.backbone
+import os
+import transaction
 import unittest
+
+
+FACETED_XML = os.path.join(os.path.dirname(__file__), "tests", "faceted.xml")
 
 
 class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
@@ -27,7 +39,7 @@ class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
         # Load ZCML
         self.loadZCML(package=collective.contact.duplicated, name="testing.zcml")
         for p in self.products:
-            z2.installProduct(app, p)
+            installProduct(app, p)
         self.loadZCML(package=collective.contact.core, name="testing.zcml")
 
     def setUpPloneSite(self, portal):
@@ -45,14 +57,12 @@ class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
         portal[folder_id].reindexObject()
 
         # Commit so that the test browser sees these objects
-        import transaction
-
         transaction.commit()
 
     def tearDownZope(self, app):
         """Tear down Zope."""
         for p in reversed(self.products):
-            z2.uninstallProduct(app, p)
+            uninstallProduct(app, p)
 
 
 FIXTURE = CollectiveContactDuplicatedLayer(name="FIXTURE")
@@ -62,6 +72,46 @@ INTEGRATION = IntegrationTesting(bases=(FIXTURE,), name="INTEGRATION")
 
 
 FUNCTIONAL = FunctionalTesting(bases=(FIXTURE,), name="FUNCTIONAL")
+
+
+ACCEPTANCE = FunctionalTesting(bases=(FIXTURE, REMOTE_LIBRARY_BUNDLE_FIXTURE, SERVER_FIXTURE), name="ACCEPTANCE")
+
+
+class FacetedLayer(PloneSandboxLayer):
+    """collective.contact.facetednav integration: mydirectory is a faceted
+    directory listing the persons, with the contact actions enabled."""
+
+    defaultBases = (FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
+        # collective.contact.facetednav (plone6 branch) depends on the collective.js.backbone profile
+        # without including its ZCML: z3c.autoinclude doesn't run in test layers
+        self.loadZCML(package=collective.js.backbone)
+        self.loadZCML(package=collective.contact.facetednav)
+        installProduct(app, "collective.contact.facetednav")
+
+    def setUpPloneSite(self, portal):
+        applyProfile(portal, "collective.contact.facetednav:default")
+        directory = portal.mydirectory
+        directory.unrestrictedTraverse("@@faceted_subtyper").enable()
+        with open(FACETED_XML, "rb") as import_file:
+            directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(import_file=import_file)
+        alsoProvides(directory, IActionsEnabled)
+        transaction.commit()
+
+    def tearDownZope(self, app):
+        uninstallProduct(app, "collective.contact.facetednav")
+
+
+FACETED_FIXTURE = FacetedLayer(name="FACETED_FIXTURE")
+
+
+FACETED_INTEGRATION = IntegrationTesting(bases=(FACETED_FIXTURE,), name="FACETED_INTEGRATION")
+
+
+FACETED_ACCEPTANCE = FunctionalTesting(
+    bases=(FACETED_FIXTURE, REMOTE_LIBRARY_BUNDLE_FIXTURE, SERVER_FIXTURE), name="FACETED_ACCEPTANCE"
+)
 
 
 class IntegrationTestCase(unittest.TestCase):

@@ -25,10 +25,7 @@ class TestDiff(IntegrationTestCase):
         # create a relation
         intids = getUtility(IIntIds)
         letter = api.content.create(
-            type="letter",
-            id="letter",
-            container=portal,
-            relatedItems=[RelationValue(intids.getId(pepper))],
+            type="letter", id="letter", container=portal, relatedItems=[RelationValue(intids.getId(pepper))]
         )
         self.assertEqual(get_back_references(pepper), [{"obj": letter, "attribute": "relatedItems"}])
 
