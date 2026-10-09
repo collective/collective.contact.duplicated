@@ -15,6 +15,8 @@ from plone.app.testing import TEST_USER_NAME
 from plone.testing.zope import installProduct
 from plone.testing.zope import uninstallProduct
 from plone.testing.zope import WSGI_SERVER_FIXTURE as SERVER_FIXTURE
+from zope.globalrequest import clearRequest
+from zope.globalrequest import setLocal
 from zope.interface import alsoProvides
 
 import collective.contact.core
@@ -44,6 +46,7 @@ class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
+        setLocal("request", portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
         # Install into Plone site using portal_setup
         applyProfile(portal, "collective.contact.core:testing")
         # insert some test data
@@ -58,6 +61,7 @@ class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
 
         # Commit so that the test browser sees these objects
         transaction.commit()
+        clearRequest()  # else the next layers get a request bound to a closed connection
 
     def tearDownZope(self, app):
         """Tear down Zope."""
@@ -91,6 +95,7 @@ class FacetedLayer(PloneSandboxLayer):
         installProduct(app, "collective.contact.facetednav")
 
     def setUpPloneSite(self, portal):
+        setLocal("request", portal.REQUEST)
         applyProfile(portal, "collective.contact.facetednav:default")
         directory = portal.mydirectory
         directory.unrestrictedTraverse("@@faceted_subtyper").enable()
@@ -98,6 +103,7 @@ class FacetedLayer(PloneSandboxLayer):
             directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(import_file=import_file)
         alsoProvides(directory, IActionsEnabled)
         transaction.commit()
+        clearRequest()
 
     def tearDownZope(self, app):
         uninstallProduct(app, "collective.contact.facetednav")
