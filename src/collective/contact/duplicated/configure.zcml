@@ -23,6 +23,15 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
+    <genericsetup:registerProfile
+        name="uninstall"
+        title="collective.contact.duplicated (uninstall)"
+        directory="profiles/uninstall"
+        description="Uninstalls the collective.contact.duplicated add-on."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        post_handler=".setuphandlers.uninstall"
+        />
+
     <genericsetup:importStep
         name="collective.contact.duplicated-postInstall"
         title="collective.contact.duplicated post_install import step"

@@ -6,8 +6,8 @@ from zope.i18nmessageid import MessageFactory
 import logging
 
 
-_ = MessageFactory('collective.contact.duplicated')
-logger = logging.getLogger('collective.contact.duplicated')
+_ = MessageFactory("collective.contact.duplicated")
+logger = logging.getLogger("collective.contact.duplicated")
 
 
 def initialize(context):

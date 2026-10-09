@@ -34,22 +34,20 @@ class BaseFieldDiff(object):
         self.name = self.field.__name__
 
     def __repr__(self):
-        return "<%s - %s>" % (self.__class__.__name__,
-                              self.name)
+        return "<%s - %s>" % (self.__class__.__name__, self.name)
 
     def get_value(self, obj):
         return getattr(obj, self.name, None)
 
     def render(self, obj):
         value = self.get_value(obj)
-        if value in (NO_VALUE, '', None):
+        if value in (NO_VALUE, "", None):
             return None
         else:
             return value
 
     def render_collection_entry(self, obj, value):
-        """Render a value element if the field is a sub field of a collection
-        """
+        """Render a value element if the field is a sub field of a collection"""
         return str(value or "")
 
     def is_different(self, value1, value2):
@@ -74,8 +72,7 @@ class FileFieldDiff(BaseFieldDiff):
     adapts(INamedField)
 
     def render(self, obj):
-        """Gets the value to render in excel file from content value
-        """
+        """Gets the value to render in excel file from content value"""
         value = self.get_value(obj)
         return value and value.filename or ""
 
@@ -84,16 +81,16 @@ class ImageFieldDiff(BaseFieldDiff):
     adapts(INamedImageField)
 
     def render(self, obj):
-        """Gets the value to render in excel file from content value
-        """
+        """Gets the value to render in excel file from content value"""
         value = self.get_value(obj)
         if not value:
-            return u""
+            return ""
 
-        url = obj.restrictedTraverse('@@images').scale(
-                            fieldname=self.name, scale='tile').absolute_url()
-        return u"""<img src="%(url)s" title="%(title)s" alt="%(title)s" />""" % {
-                        'url': url, 'title': value.filename}
+        url = obj.restrictedTraverse("@@images").scale(fieldname=self.name, scale="tile").absolute_url()
+        return """<img src="%(url)s" title="%(title)s" alt="%(title)s" />""" % {
+            "url": url,
+            "title": value.filename,
+        }
 
 
 class BooleanFieldDiff(BaseFieldDiff):
@@ -102,9 +99,9 @@ class BooleanFieldDiff(BaseFieldDiff):
     def render(self, obj):
         value = self.get_value(obj)
         if value in (NO_VALUE, None):
-            return u""
+            return ""
 
-        return value and _(u"Yes") or _(u"No")
+        return value and _("Yes") or _("No")
 
 
 class DateFieldDiff(BaseFieldDiff):
@@ -113,9 +110,9 @@ class DateFieldDiff(BaseFieldDiff):
     def render(self, obj):
         value = self.get_value(obj)
         if value in (NO_VALUE, None):
-            return u""
+            return ""
         datetime = datify(value)
-        tlc = obj.unrestrictedTraverse('@@plone').toLocalizedTime
+        tlc = obj.unrestrictedTraverse("@@plone").toLocalizedTime
         return translate(tlc(datetime))
 
     def render_collection_entry(self, obj, value):
@@ -129,7 +126,7 @@ class ChoiceFieldDiff(BaseFieldDiff):
         if not value:
             return value
 
-        if obj.__class__.__name__ is 'mystruct':
+        if obj.__class__.__name__ == "mystruct":
             return value
 
         vocabulary = self.field.vocabulary
@@ -162,7 +159,7 @@ class ChoiceFieldDiff(BaseFieldDiff):
 
     def render_collection_entry(self, obj, value):
         voc_value = self._get_vocabulary_value(obj, value)
-        return voc_value and translate(voc_value, context=obj.REQUEST) or u""
+        return voc_value and translate(voc_value, context=obj.REQUEST) or ""
 
 
 class CollectionFieldDiff(BaseFieldDiff):
@@ -175,31 +172,28 @@ class CollectionFieldDiff(BaseFieldDiff):
             return super(CollectionFieldDiff, self).is_different(value1, value2)
 
     def render(self, obj):
-        """Gets the value to render in excel file from content value
-        """
+        """Gets the value to render in excel file from content value"""
         value = self.get_value(obj)
         if value == []:
             return None
 
         sub_Diff = IFieldDiff(self.field.value_type)
-        return value and u", ".join([sub_Diff.render_collection_entry(obj, v)
-                                     for v in value]) or u""
+        return value and ", ".join([sub_Diff.render_collection_entry(obj, v) for v in value]) or ""
 
 
 class RichTextFieldDiff(BaseFieldDiff):
     adapts(IRichText)
 
     def render(self, obj):
-        """Gets the value to render in excel file from content value
-        """
+        """Gets the value to render in excel file from content value"""
         value = self.get_value(obj)
         if not value or value == NO_VALUE:
             return ""
 
-        ptransforms = getToolByName(obj, 'portal_transforms')
-        text = ptransforms.convert('text_to_html', value.output).getData()
+        ptransforms = getToolByName(obj, "portal_transforms")
+        text = ptransforms.convert("text_to_html", value.output).getData()
         if len(text) > 50:
-            return text[:47] + u"..."
+            return text[:47] + "..."
 
 
 class RelationFieldDiff(BaseFieldDiff):
@@ -221,14 +215,17 @@ class RelationFieldDiff(BaseFieldDiff):
 
     def render_collection_entry(self, obj, value):
         if not value:
-            return u""
+            return ""
         obj = value.to_object
-        return """<a href="%s" target="new">%s</a>""" % (obj.absolute_url(),
-                                                         obj.Title())
+        return """<a href="%s" target="new">%s</a>""" % (
+            obj.absolute_url(),
+            obj.Title(),
+        )
 
 
 try:
     from collective.z3cform.datagridfield.interfaces import IRow
+
     HAS_DATAGRIDFIELD = True
 
     class DictRowFieldDiff(BaseFieldDiff):
@@ -239,18 +236,21 @@ try:
             field_renderings = []
             for fieldname, field in fields:
                 sub_Diff = IFieldDiff(field)
-                field_renderings.append(u"%s : %s" % (
-                                        sub_Diff.render_header(),
-                                        sub_Diff.render_collection_entry(obj,
-                                                value.get(fieldname))))
+                field_renderings.append(
+                    "%s : %s"
+                    % (
+                        sub_Diff.render_header(),
+                        sub_Diff.render_collection_entry(obj, value.get(fieldname)),
+                    )
+                )
 
-            return u" / ".join([r for r in field_renderings])
+            return " / ".join([r for r in field_renderings])
 
         def render(self, obj):
             value = self.get_value(obj)
             return self.render_collection_entry(obj, value)
 
-except:
+except ImportError:
     HAS_DATAGRIDFIELD = False
 
 
@@ -259,7 +259,9 @@ class ContactChoiceFieldDiff(RelationFieldDiff):
 
     def render_collection_entry(self, obj, value):
         if not value:
-            return u""
+            return ""
         obj = value.to_object
-        return """<a href="%s" target="new">%s</a>""" % (obj.absolute_url(),
-                                                         obj.get_full_title())
+        return """<a href="%s" target="new">%s</a>""" % (
+            obj.absolute_url(),
+            obj.get_full_title(),
+        )

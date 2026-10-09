@@ -3,7 +3,9 @@
 *.pyc
 .installed.cfg
 .mr.developer.cfg
-.plone.versioncheck.tracked.json
+.plone*
+.python-version
+checkversion*
 .project
 .pydevproject
 .settings/
@@ -23,3 +25,4 @@ htmlcov/
 output.xml
 pyvenv.cfg
 *.swp
+CACHEDIR.TAG

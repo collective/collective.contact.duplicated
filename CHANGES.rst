@@ -2,10 +2,11 @@ Changelog
 =========
 
 
-0.7 (unreleased)
-----------------
+1.0.0 (unreleased)
+------------------
 
-- Nothing changed yet.
+- Plone 6.2 and Python 3 compatibility, dropped Plone 4. Added an uninstall profile.
+  [laulaz, chris-adam]
 
 
 0.6 (2022-08-19)
