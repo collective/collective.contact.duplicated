@@ -61,7 +61,7 @@ The content is removed
 Open the faceted directory
     Go to  ${DIRECTORY_URL}
     Wait until page contains element  ${MERGE_ACTION}
-    # contacts of the results loaded by collective.contact.facetednav (backbone collection)
+    # contacts of the results loaded by collective.contact.facetednav
     Wait for condition  return typeof contactfacetednav.contacts !== 'undefined' && contactfacetednav.contacts.length > 0
 
 Select the contact

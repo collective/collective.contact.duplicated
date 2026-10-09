@@ -22,7 +22,6 @@ from zope.interface import alsoProvides
 import collective.contact.core
 import collective.contact.duplicated
 import collective.contact.facetednav
-import collective.js.backbone
 import os
 import transaction
 import unittest
@@ -88,9 +87,6 @@ class FacetedLayer(PloneSandboxLayer):
     defaultBases = (FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        # collective.contact.facetednav (plone6 branch) depends on the collective.js.backbone profile
-        # without including its ZCML: z3c.autoinclude doesn't run in test layers
-        self.loadZCML(package=collective.js.backbone)
         self.loadZCML(package=collective.contact.facetednav)
         installProduct(app, "collective.contact.facetednav")
 
