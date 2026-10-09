@@ -20,11 +20,6 @@ on "Merge duplicated" button.
 
 It is also possible to pass a data field with data that do not come from an existing contact. Such data may be merged with the final contact.
 
-Tests
-=====
-
-
-
 Extend
 ======
 
