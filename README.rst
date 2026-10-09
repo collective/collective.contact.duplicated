@@ -1,3 +1,8 @@
+.. image:: https://github.com/collective/collective.contact.duplicated/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/collective/collective.contact.duplicated/actions/workflows/main.yml
+.. image:: https://coveralls.io/repos/github/collective/collective.contact.duplicated/badge.svg
+    :target: https://coveralls.io/github/collective/collective.contact.duplicated
+
 =============================
 collective.contact.duplicated
 =============================
@@ -18,11 +23,7 @@ It is also possible to pass a data field with data that do not come from an exis
 Tests
 =====
 
-.. image:: https://secure.travis-ci.org/collective/collective.contact.duplicated.png
-    :target: http://travis-ci.org/collective/collective.contact.duplicated
 
-.. image:: https://coveralls.io/repos/collective/collective.contact.duplicated/badge.png?branch=master
-    :target: https://coveralls.io/r/collective/collective.contact.duplicated?branch=master
 
 Extend
 ======
