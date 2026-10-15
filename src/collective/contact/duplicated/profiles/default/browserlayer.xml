@@ -1,7 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer
-    name="collective.contact.duplicated"
-    interface="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
+  <layer interface="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
+         name="collective.contact.duplicated"
   />
 </layers>

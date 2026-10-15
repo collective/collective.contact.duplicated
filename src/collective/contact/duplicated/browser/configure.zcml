@@ -2,12 +2,13 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:zcml="http://namespaces.plone.org/zcml"
-    i18n_domain="collective.contact.duplicated">
+    i18n_domain="collective.contact.duplicated"
+    >
 
   <browser:resourceDirectory
-    name="collective.contact.duplicated"
-    directory="static"
-    />
+      name="collective.contact.duplicated"
+      directory="static"
+      />
 
   <browser:page
       name="merge-contacts"
@@ -26,8 +27,8 @@
       layer="collective.contact.duplicated.interfaces.ICollectiveContactDuplicatedLayer"
       />
 
-   <configure zcml:condition="installed collective.contact.facetednav">
-       <include package=".contactfaceted" />
-   </configure>
+  <configure zcml:condition="installed collective.contact.facetednav">
+    <include package=".contactfaceted" />
+  </configure>
 
 </configure>
