@@ -46,7 +46,7 @@ class Compare(BrowserView):
             raise NotFound
 
         # one content type
-        assert len(set([b.portal_type for b in contents])) == 1
+        assert len({b.portal_type for b in contents}) == 1
         content_objs = [c.getObject() for c in contents]
 
         data = [
@@ -89,7 +89,7 @@ class Compare(BrowserView):
 
             if len(set(person_uids)) > 1:
                 self.merge_hp_persons = True
-                self.merge_person_url = "%s/merge-contacts?%s" % (
+                self.merge_person_url = "{}/merge-contacts?{}".format(
                     self.context.absolute_url(),
                     "&".join(["uids:list=%s" % uid for uid in person_uids]),
                 )
@@ -153,7 +153,7 @@ class Compare(BrowserView):
 class Merge(BrowserView):
 
     def _transfer_field_values(self, values, contents, canonical):
-        fields = dict([(field.__name__, field) for field in get_fields(canonical.portal_type)])
+        fields = {field.__name__: field for field in get_fields(canonical.portal_type)}
         canonical_uid = IUUID(canonical)
         for field_name, uid in list(values.items()):
             if field_name in ["_authenticator", "data", "ajax_load"]:
@@ -187,7 +187,9 @@ class Merge(BrowserView):
                         value.remove(item)
                         # We check if a relation to canon intid not already exists to avoid the following error
                         # ValueError: term values must be unique
-                        if not [rel.to_path for rel in value if rel.to_id == canonical_intid]:
+                        if not [
+                            rel.to_path for rel in value if rel.to_id == canonical_intid
+                        ]:
                             value.insert(index, RelationValue(canonical_intid))
                         break
 
@@ -203,7 +205,9 @@ class Merge(BrowserView):
         if len(list(content.keys())) > 0:
             cb = content.manage_cutObjects(list(content.keys()))
             canonical.manage_pasteObjects(cb)
-        IStatusMessage(self.request).add("%s has been removed" % "/".join(content.getPhysicalPath()))
+        IStatusMessage(self.request).add(
+            "%s has been removed" % "/".join(content.getPhysicalPath())
+        )
         api.content.delete(content)
 
     def __call__(self):

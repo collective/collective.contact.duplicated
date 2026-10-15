@@ -10,12 +10,13 @@ from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.schema import getFieldsInOrder
 
-
 EXCLUDED_FIELDS = ["parent_address"]
 
 
 def _get_schema_fields(schema, names):
-    return [schema[f] for f in names if f not in EXCLUDED_FIELDS and not schema[f].readonly]
+    return [
+        schema[f] for f in names if f not in EXCLUDED_FIELDS and not schema[f].readonly
+    ]
 
 
 def non_fieldset_fields(schema):
@@ -53,7 +54,9 @@ def get_fieldsets(portal_type):
         if not IFormFieldProvider.providedBy(behavior):
             continue
 
-        fieldsets_dict["default"]["fields"].extend(_get_schema_fields(behavior, non_fieldset_fields(behavior)))
+        fieldsets_dict["default"]["fields"].extend(
+            _get_schema_fields(behavior, non_fieldset_fields(behavior))
+        )
 
         for fieldset in behavior.queryTaggedValue(FIELDSETS_KEY, []):
             fieldsets_dict.setdefault(

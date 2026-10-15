@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Tests of fields.py: the IFieldDiff adapters of the fields of the contact types."""
 
 from collections import namedtuple
@@ -36,9 +35,10 @@ import base64
 import datetime
 import unittest
 
-
 # 1x1 PNG
-PNG = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC")
+PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+)
 
 
 def schema_field(portal_type, name):
@@ -48,7 +48,7 @@ def schema_field(portal_type, name):
 class FieldDiffTestCase(IntegrationTestCase):
 
     def setUp(self):
-        super(FieldDiffTestCase, self).setUp()
+        super().setUp()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         login(self.portal, TEST_USER_NAME)
         self.directory = self.portal.mydirectory
@@ -64,7 +64,7 @@ class TestBaseFieldDiff(FieldDiffTestCase):
     """BaseFieldDiff methods, through FieldDiff (zope.schema IField adapter)"""
 
     def setUp(self):
-        super(TestBaseFieldDiff, self).setUp()
+        super().setUp()
         self.diff = IFieldDiff(schema_field("person", "lastname"))
 
     def test___init__(self):
@@ -87,7 +87,9 @@ class TestBaseFieldDiff(FieldDiffTestCase):
         self.assertIsNone(self.diff.render(self.degaulle))
 
     def test_render_collection_entry(self):
-        self.assertEqual(self.diff.render_collection_entry(self.degaulle, "De Gaulle"), "De Gaulle")
+        self.assertEqual(
+            self.diff.render_collection_entry(self.degaulle, "De Gaulle"), "De Gaulle"
+        )
         self.assertEqual(self.diff.render_collection_entry(self.degaulle, None), "")
 
     def test_is_different(self):
@@ -103,7 +105,9 @@ class TestBaseFieldDiff(FieldDiffTestCase):
         self.diff.copy({"lastname": "Le Général"}, self.degaulle)
         self.assertEqual(self.degaulle.lastname, "Le Général")
         # from an acquisition property of a held position: the person value
-        IFieldDiff(schema_field("person", "person_title")).copy(self.degaulle.adt, self.pepper)
+        IFieldDiff(schema_field("person", "person_title")).copy(
+            self.degaulle.adt, self.pepper
+        )
         self.assertEqual(self.pepper.person_title, "Général")
 
 
@@ -126,7 +130,12 @@ class TestImageFieldDiff(FieldDiffTestCase):
         self.assertEqual(diff.render(self.degaulle), "")
         self.degaulle.photo = NamedBlobImage(data=PNG, filename="degaulle.png")
         render = diff.render(self.degaulle)
-        self.assertTrue(render.startswith('<img src="http://nohost/plone/mydirectory/degaulle/@@images/'), render)
+        self.assertTrue(
+            render.startswith(
+                '<img src="http://nohost/plone/mydirectory/degaulle/@@images/'
+            ),
+            render,
+        )
         self.assertIn('title="degaulle.png" alt="degaulle.png"', render)
 
 
@@ -144,7 +153,7 @@ class TestBooleanFieldDiff(FieldDiffTestCase):
 class TestDateFieldDiff(FieldDiffTestCase):
 
     def setUp(self):
-        super(TestDateFieldDiff, self).setUp()
+        super().setUp()
         self.diff = IFieldDiff(IBirthday["birthday"])
 
     def test_render(self):
@@ -156,23 +165,35 @@ class TestDateFieldDiff(FieldDiffTestCase):
         self.assertEqual(self.diff.render(self.directory.rambo), "")
 
     def test_render_collection_entry(self):
-        self.assertEqual(self.diff.render_collection_entry(self.degaulle, datetime.date(1901, 11, 22)), "1901/11/22")
+        self.assertEqual(
+            self.diff.render_collection_entry(
+                self.degaulle, datetime.date(1901, 11, 22)
+            ),
+            "1901/11/22",
+        )
 
 
 class TestChoiceFieldDiff(FieldDiffTestCase):
 
     def setUp(self):
-        super(TestChoiceFieldDiff, self).setUp()
+        super().setUp()
         # vocabulary of the field
         self.gender = IFieldDiff(schema_field("person", "gender"))
         # named vocabulary
-        self.organization_type = IFieldDiff(schema_field("organization", "organization_type"))
+        self.organization_type = IFieldDiff(
+            schema_field("organization", "organization_type")
+        )
 
     def test__get_vocabulary_value(self):
         self.assertIsInstance(self.gender, ChoiceFieldDiff)
         self.assertIsInstance(self.organization_type, ChoiceFieldDiff)
-        self.assertEqual(self.gender._get_vocabulary_value(self.degaulle, "F"), "Female")
-        self.assertEqual(self.organization_type._get_vocabulary_value(self.armeedeterre, "army"), "Army")
+        self.assertEqual(
+            self.gender._get_vocabulary_value(self.degaulle, "F"), "Female"
+        )
+        self.assertEqual(
+            self.organization_type._get_vocabulary_value(self.armeedeterre, "army"),
+            "Army",
+        )
         # unknown token, empty value
         self.assertEqual(self.gender._get_vocabulary_value(self.degaulle, "X"), "X")
         self.assertIsNone(self.gender._get_vocabulary_value(self.degaulle, None))
@@ -186,16 +207,20 @@ class TestChoiceFieldDiff(FieldDiffTestCase):
         self.assertIsNone(self.gender.render(self.directory.rambo))
 
     def test_render_collection_entry(self):
-        self.assertEqual(self.gender.render_collection_entry(self.degaulle, "M"), "Male")
+        self.assertEqual(
+            self.gender.render_collection_entry(self.degaulle, "M"), "Male"
+        )
         self.assertEqual(self.gender.render_collection_entry(self.degaulle, None), "")
 
 
 class TestCollectionFieldDiff(FieldDiffTestCase):
 
     def setUp(self):
-        super(TestCollectionFieldDiff, self).setUp()
+        super().setUp()
         self.diff = IFieldDiff(IRelatedItems["relatedItems"])
-        self.letter = api.content.create(container=self.portal, type="letter", id="letter")
+        self.letter = api.content.create(
+            container=self.portal, type="letter", id="letter"
+        )
 
     def test_is_different(self):
         self.assertIsInstance(self.diff, CollectionFieldDiff)
@@ -213,7 +238,10 @@ class TestCollectionFieldDiff(FieldDiffTestCase):
         self.assertEqual(self.diff.render(self.letter), "")
         # entries rendered by the value type adapter, joined by commas
         # (Plone 4: UnicodeDecodeError with a non ascii title, see MIGRATION.md)
-        self.letter.relatedItems = [self.relation(self.pepper), self.relation(self.directory.rambo)]
+        self.letter.relatedItems = [
+            self.relation(self.pepper),
+            self.relation(self.directory.rambo),
+        ]
         self.assertEqual(
             safe_unicode(self.diff.render(self.letter)),
             '<a href="http://nohost/plone/mydirectory/pepper" target="new">Mister Pepper</a>, '
@@ -224,7 +252,7 @@ class TestCollectionFieldDiff(FieldDiffTestCase):
 class TestRichTextFieldDiff(FieldDiffTestCase):
 
     def setUp(self):
-        super(TestRichTextFieldDiff, self).setUp()
+        super().setUp()
         self.diff = IFieldDiff(schema_field("organization", "activity"))
 
     def test_render(self):
@@ -232,7 +260,9 @@ class TestRichTextFieldDiff(FieldDiffTestCase):
         self.assertEqual(self.diff.render(self.armeedeterre), "")
         # long text: truncated to 50 characters
         self.armeedeterre.activity = RichTextValue(
-            "The French Army is the land-based component of the French Armed Forces", "text/plain", "text/plain"
+            "The French Army is the land-based component of the French Armed Forces",
+            "text/plain",
+            "text/plain",
         )
         render = self.diff.render(self.armeedeterre)
         self.assertEqual(len(render), 50)
@@ -242,14 +272,16 @@ class TestRichTextFieldDiff(FieldDiffTestCase):
     @unittest.expectedFailure
     def test_render_short_text(self):
         """Plone 4 bug: a text of 50 characters or less renders None (nothing is returned)"""
-        self.armeedeterre.activity = RichTextValue("Land forces", "text/plain", "text/plain")
+        self.armeedeterre.activity = RichTextValue(
+            "Land forces", "text/plain", "text/plain"
+        )
         self.assertIn("Land forces", self.diff.render(self.armeedeterre))
 
 
 class TestRelationFieldDiff(FieldDiffTestCase):
 
     def setUp(self):
-        super(TestRelationFieldDiff, self).setUp()
+        super().setUp()
         # value type of the related items field: RelationChoice
         self.diff = IFieldDiff(IRelatedItems["relatedItems"].value_type)
 
@@ -259,8 +291,16 @@ class TestRelationFieldDiff(FieldDiffTestCase):
         # a value against no value is not a difference
         self.assertFalse(self.diff.is_different(None, self.relation(self.pepper)))
         self.assertFalse(self.diff.is_different(self.relation(self.pepper), None))
-        self.assertFalse(self.diff.is_different(self.relation(self.pepper), self.relation(self.pepper)))
-        self.assertTrue(self.diff.is_different(self.relation(self.degaulle), self.relation(self.pepper)))
+        self.assertFalse(
+            self.diff.is_different(
+                self.relation(self.pepper), self.relation(self.pepper)
+            )
+        )
+        self.assertTrue(
+            self.diff.is_different(
+                self.relation(self.degaulle), self.relation(self.pepper)
+            )
+        )
 
     def test_render(self):
         # a named relation field: position of the held positions
@@ -275,7 +315,11 @@ class TestRelationFieldDiff(FieldDiffTestCase):
     def test_render_collection_entry(self):
         self.assertEqual(self.diff.render_collection_entry(self.degaulle, None), "")
         self.assertEqual(
-            safe_unicode(self.diff.render_collection_entry(self.degaulle, self.relation(self.pepper))),
+            safe_unicode(
+                self.diff.render_collection_entry(
+                    self.degaulle, self.relation(self.pepper)
+                )
+            ),
             '<a href="http://nohost/plone/mydirectory/pepper" target="new">Mister Pepper</a>',
         )
 
@@ -284,7 +328,7 @@ class TestDictRowFieldDiff(FieldDiffTestCase):
     """position_types of the directory: a list of dict rows (datagridfield)"""
 
     def setUp(self):
-        super(TestDictRowFieldDiff, self).setUp()
+        super().setUp()
         field = schema_field("directory", "position_types")
         self.assertIsInstance(IFieldDiff(field), CollectionFieldDiff)
         self.diff = IFieldDiff(field.value_type)
@@ -294,7 +338,9 @@ class TestDictRowFieldDiff(FieldDiffTestCase):
     def test_render(self):
         """Plone 4 bug: AttributeError, the sub field adapters have no render_header method"""
         self.assertEqual(
-            IFieldDiff(schema_field("directory", "position_types")).render(self.directory)[:24],
+            IFieldDiff(schema_field("directory", "position_types")).render(
+                self.directory
+            )[:24],
             "Name : General / Token :",
         )
 
@@ -302,7 +348,9 @@ class TestDictRowFieldDiff(FieldDiffTestCase):
     def test_render_collection_entry(self):
         """Plone 4 bug: AttributeError, the sub field adapters have no render_header method"""
         self.assertEqual(
-            self.diff.render_collection_entry(self.directory, {"name": "General", "token": "general"}),
+            self.diff.render_collection_entry(
+                self.directory, {"name": "General", "token": "general"}
+            ),
             "Name : General / Token : general",
         )
 
@@ -315,7 +363,9 @@ class TestContactChoiceFieldDiff(FieldDiffTestCase):
         self.assertEqual(diff.render_collection_entry(self.degaulle.adt, None), "")
         # full title of the organization
         self.assertEqual(
-            diff.render_collection_entry(self.degaulle.adt, self.directory.pepper.sergent_pepper.position),
+            diff.render_collection_entry(
+                self.degaulle.adt, self.directory.pepper.sergent_pepper.position
+            ),
             '<a href="http://nohost/plone/mydirectory/armeedeterre/corpsa/divisionalpha/regimenth/brigadelh/'
             'sergent_lh" target="new">Sergent de la brigade LH (Armée de terre / Corps A / Division Alpha / '
             "Régiment H / Brigade LH)</a>",

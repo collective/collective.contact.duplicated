@@ -7,6 +7,8 @@ Changelog
 
 - Plone 6.2 and Python 3 compatibility, dropped Plone 4. Added an uninstall profile.
   [laulaz, chris-adam]
+- Added plone.meta configuration (tox, pre-commit, GitHub Actions).
+  [chris-adam]
 
 
 0.6 (2022-08-19)
@@ -67,7 +69,7 @@ Changelog
 0.2 (2015-11-24)
 ----------------
 
-- Fix plone.protect compliancy
+- Fix plone.protect compliance
   [ebrehault]
 
 - Fix permission: anybody allowed to add contacts must be able to merge

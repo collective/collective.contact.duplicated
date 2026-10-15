@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Base module for unittesting."""
 
 from collective.contact.facetednav.interfaces import IActionsEnabled
@@ -26,7 +25,6 @@ import os
 import transaction
 import unittest
 
-
 FACETED_XML = os.path.join(os.path.dirname(__file__), "tests", "faceted.xml")
 
 
@@ -45,7 +43,9 @@ class CollectiveContactDuplicatedLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         """Set up Plone."""
-        setLocal("request", portal.REQUEST)  # collective.fingerpointing (imio.fpaudit) needs a request
+        setLocal(
+            "request", portal.REQUEST
+        )  # collective.fingerpointing (imio.fpaudit) needs a request
         # Install into Plone site using portal_setup
         applyProfile(portal, "collective.contact.core:testing")
         # insert some test data
@@ -77,7 +77,9 @@ INTEGRATION = IntegrationTesting(bases=(FIXTURE,), name="INTEGRATION")
 FUNCTIONAL = FunctionalTesting(bases=(FIXTURE,), name="FUNCTIONAL")
 
 
-ACCEPTANCE = FunctionalTesting(bases=(FIXTURE, REMOTE_LIBRARY_BUNDLE_FIXTURE, SERVER_FIXTURE), name="ACCEPTANCE")
+ACCEPTANCE = FunctionalTesting(
+    bases=(FIXTURE, REMOTE_LIBRARY_BUNDLE_FIXTURE, SERVER_FIXTURE), name="ACCEPTANCE"
+)
 
 
 class FacetedLayer(PloneSandboxLayer):
@@ -96,7 +98,9 @@ class FacetedLayer(PloneSandboxLayer):
         directory = portal.mydirectory
         directory.unrestrictedTraverse("@@faceted_subtyper").enable()
         with open(FACETED_XML, "rb") as import_file:
-            directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(import_file=import_file)
+            directory.unrestrictedTraverse("@@faceted_exportimport")._import_xml(
+                import_file=import_file
+            )
         alsoProvides(directory, IActionsEnabled)
         transaction.commit()
         clearRequest()
@@ -108,11 +112,14 @@ class FacetedLayer(PloneSandboxLayer):
 FACETED_FIXTURE = FacetedLayer(name="FACETED_FIXTURE")
 
 
-FACETED_INTEGRATION = IntegrationTesting(bases=(FACETED_FIXTURE,), name="FACETED_INTEGRATION")
+FACETED_INTEGRATION = IntegrationTesting(
+    bases=(FACETED_FIXTURE,), name="FACETED_INTEGRATION"
+)
 
 
 FACETED_ACCEPTANCE = FunctionalTesting(
-    bases=(FACETED_FIXTURE, REMOTE_LIBRARY_BUNDLE_FIXTURE, SERVER_FIXTURE), name="FACETED_ACCEPTANCE"
+    bases=(FACETED_FIXTURE, REMOTE_LIBRARY_BUNDLE_FIXTURE, SERVER_FIXTURE),
+    name="FACETED_ACCEPTANCE",
 )
 
 
@@ -122,7 +129,7 @@ class IntegrationTestCase(unittest.TestCase):
     layer = INTEGRATION
 
     def setUp(self):
-        super(IntegrationTestCase, self).setUp()
+        super().setUp()
         self.portal = self.layer["portal"]
 
 

@@ -1,6 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <registry>
-  <records prefix="plone.bundles/collective-contact-duplicated"
-           interface="plone.base.interfaces.resources.IBundleRegistry"
-           remove="True" />
+  <records interface="plone.base.interfaces.resources.IBundleRegistry"
+           prefix="plone.bundles/collective-contact-duplicated"
+           remove="True"
+  />
 </registry>

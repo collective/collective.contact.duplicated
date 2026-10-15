@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Tests of browser/contactfaceted/action.py: the "Merge duplicated" batch action of collective.contact.facetednav."""
 
 from collective.contact.duplicated.browser.contactfaceted.action import MergeAction
@@ -24,7 +23,11 @@ class TestMergeAction(unittest.TestCase):
     def setUp(self):
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
-        alsoProvides(self.request, ICollectiveContactFacetednavLayer, ICollectiveContactDuplicatedLayer)
+        alsoProvides(
+            self.request,
+            ICollectiveContactFacetednavLayer,
+            ICollectiveContactDuplicatedLayer,
+        )
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         login(self.portal, TEST_USER_NAME)
         directory = self.portal.mydirectory
@@ -37,7 +40,9 @@ class TestMergeAction(unittest.TestCase):
 
     def viewlet(self):
         viewlets = [
-            v for v in self.manager.viewlets if v.__name__ == "collective.contact.duplicated.facetednav.actions.merge"
+            v
+            for v in self.manager.viewlets
+            if v.__name__ == "collective.contact.duplicated.facetednav.actions.merge"
         ]
         self.assertEqual(len(viewlets), 1)
         return viewlets[0]

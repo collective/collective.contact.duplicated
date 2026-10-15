@@ -1,41 +1,64 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="collective.contact.duplicated">
+    i18n_domain="collective.contact.duplicated"
+    >
 
-    <adapter factory=".fields.FieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.FieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.FileFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.FileFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.ImageFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.ImageFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.BooleanFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.BooleanFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.CollectionFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.CollectionFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.DateFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.DateFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.ChoiceFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.ChoiceFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter factory=".fields.RichTextFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.RichTextFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
-    <adapter zcml:condition="installed z3c.relationfield"
-             factory=".fields.RelationFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.RelationFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      zcml:condition="installed z3c.relationfield"
+      />
 
-    <adapter zcml:condition="installed collective.z3cform.datagridfield"
-             factory=".fields.DictRowFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.DictRowFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      zcml:condition="installed collective.z3cform.datagridfield"
+      />
 
-    <adapter factory=".fields.ContactChoiceFieldDiff"
-             provides=".interfaces.IFieldDiff" />
+  <adapter
+      factory=".fields.ContactChoiceFieldDiff"
+      provides=".interfaces.IFieldDiff"
+      />
 
 </configure>

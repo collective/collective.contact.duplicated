@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <registry>
 
-  <records prefix="plone.bundles/collective-contact-duplicated"
-           interface='plone.base.interfaces.resources.IBundleRegistry'>
+  <records interface="plone.base.interfaces.resources.IBundleRegistry"
+           prefix="plone.bundles/collective-contact-duplicated"
+  >
     <value key="enabled">True</value>
     <value key="csscompilation">++resource++collective.contact.duplicated/duplicated.css</value>
     <value key="jscompilation">++resource++collective.contact.duplicated/duplicated.js</value>

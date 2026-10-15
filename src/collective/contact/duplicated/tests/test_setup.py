@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Setup/installation tests for this package."""
 
 from collective.contact.duplicated.interfaces import ICollectiveContactDuplicatedLayer
@@ -7,7 +6,6 @@ from plone.base.utils import get_installer
 from plone.browserlayer import utils
 from plone.registry.interfaces import IRegistry
 from zope.component import getUtility
-
 
 PACKAGE = "collective.contact.duplicated"
 JS = "++resource++collective.contact.duplicated/duplicated.js"
@@ -25,11 +23,11 @@ def uninstall(portal, product):
 def registered_resources(portal):
     """css and js of the registry bundles"""
     registry = getUtility(IRegistry)
-    return set(
+    return {
         registry[name]
         for name in registry.records.keys()
         if name.startswith("plone.bundles/") and name.endswith("compilation")
-    )
+    }
 
 
 class TestInstall(IntegrationTestCase):

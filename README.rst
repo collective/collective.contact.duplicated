@@ -1,7 +1,5 @@
-.. image:: https://github.com/collective/collective.contact.duplicated/actions/workflows/main.yml/badge.svg
-    :target: https://github.com/collective/collective.contact.duplicated/actions/workflows/main.yml
-.. image:: https://coveralls.io/repos/github/collective/collective.contact.duplicated/badge.svg
-    :target: https://coveralls.io/github/collective/collective.contact.duplicated
+.. image:: https://github.com/collective/collective.contact.duplicated/actions/workflows/meta.yml/badge.svg?branch=master
+    :target: https://github.com/collective/collective.contact.duplicated/actions/workflows/meta.yml
 
 =============================
 collective.contact.duplicated

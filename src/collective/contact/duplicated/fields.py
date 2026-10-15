@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from collective.contact.duplicated import _
@@ -27,14 +26,14 @@ from zope.schema.interfaces import IVocabularyFactory
 
 
 @implementer(IFieldDiff)
-class BaseFieldDiff(object):
+class BaseFieldDiff:
 
     def __init__(self, field):
         self.field = field
         self.name = self.field.__name__
 
     def __repr__(self):
-        return "<%s - %s>" % (self.__class__.__name__, self.name)
+        return f"<{self.__class__.__name__} - {self.name}>"
 
     def get_value(self, obj):
         return getattr(obj, self.name, None)
@@ -86,11 +85,15 @@ class ImageFieldDiff(BaseFieldDiff):
         if not value:
             return ""
 
-        url = obj.restrictedTraverse("@@images").scale(fieldname=self.name, scale="tile").absolute_url()
-        return """<img src="%(url)s" title="%(title)s" alt="%(title)s" />""" % {
-            "url": url,
-            "title": value.filename,
-        }
+        url = (
+            obj.restrictedTraverse("@@images")
+            .scale(fieldname=self.name, scale="tile")
+            .absolute_url()
+        )
+        return """<img src="{url}" title="{title}" alt="{title}" />""".format(
+            url=url,
+            title=value.filename,
+        )
 
 
 class BooleanFieldDiff(BaseFieldDiff):
@@ -169,7 +172,7 @@ class CollectionFieldDiff(BaseFieldDiff):
         if not value1 and not value2:  # None, [], () are the same
             return False
         else:
-            return super(CollectionFieldDiff, self).is_different(value1, value2)
+            return super().is_different(value1, value2)
 
     def render(self, obj):
         """Gets the value to render in excel file from content value"""
@@ -178,7 +181,11 @@ class CollectionFieldDiff(BaseFieldDiff):
             return None
 
         sub_Diff = IFieldDiff(self.field.value_type)
-        return value and ", ".join([sub_Diff.render_collection_entry(obj, v) for v in value]) or ""
+        return (
+            value
+            and ", ".join([sub_Diff.render_collection_entry(obj, v) for v in value])
+            or ""
+        )
 
 
 class RichTextFieldDiff(BaseFieldDiff):
@@ -217,7 +224,7 @@ class RelationFieldDiff(BaseFieldDiff):
         if not value:
             return ""
         obj = value.to_object
-        return """<a href="%s" target="new">%s</a>""" % (
+        return """<a href="{}" target="new">{}</a>""".format(
             obj.absolute_url(),
             obj.Title(),
         )
@@ -261,7 +268,7 @@ class ContactChoiceFieldDiff(RelationFieldDiff):
         if not value:
             return ""
         obj = value.to_object
-        return """<a href="%s" target="new">%s</a>""" % (
+        return """<a href="{}" target="new">{}</a>""".format(
             obj.absolute_url(),
             obj.get_full_title(),
         )

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Setup/installation tests for this package."""
 
 from collective.contact.duplicated.api import get_back_references
@@ -25,9 +24,14 @@ class TestDiff(IntegrationTestCase):
         # create a relation
         intids = getUtility(IIntIds)
         letter = api.content.create(
-            type="letter", id="letter", container=portal, relatedItems=[RelationValue(intids.getId(pepper))]
+            type="letter",
+            id="letter",
+            container=portal,
+            relatedItems=[RelationValue(intids.getId(pepper))],
         )
-        self.assertEqual(get_back_references(pepper), [{"obj": letter, "attribute": "relatedItems"}])
+        self.assertEqual(
+            get_back_references(pepper), [{"obj": letter, "attribute": "relatedItems"}]
+        )
 
         degaulle_uid = IUUID(degaulle)
         pepper_uid = IUUID(pepper)
@@ -35,7 +39,9 @@ class TestDiff(IntegrationTestCase):
         view = portal.mydirectory.unrestrictedTraverse("merge-contacts")
         view.update()
         fieldsets = view.fieldsets
-        self.assertListEqual([fs["id"] for fs in fieldsets], ["default", "contact_details", "address"])
+        self.assertListEqual(
+            [fs["id"] for fs in fieldsets], ["default", "contact_details", "address"]
+        )
         self.assertEqual(len(view.contents[0]["subcontents"]), 2)
 
         # different on each content
@@ -125,7 +131,8 @@ class TestDiff(IntegrationTestCase):
         position_diff = view.diff(view.fieldsets[0]["fields"][0])
         self.assertEqual(
             position_diff[0]["render"],
-            """<a href="http://nohost/plone/mydirectory/armeedeterre" """ """target="new">Armée de terre</a>""",
+            """<a href="http://nohost/plone/mydirectory/armeedeterre" """
+            """target="new">Armée de terre</a>""",
         )
         self.assertEqual(
             position_diff[1]["render"],
