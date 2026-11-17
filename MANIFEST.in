@@ -1,5 +1,5 @@
 recursive-include src/collective *
 recursive-include docs *
-recursive-include buildout.d *
 include *
 global-exclude *pyc
+exclude *-mxdev.txt
